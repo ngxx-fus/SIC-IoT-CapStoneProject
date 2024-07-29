@@ -1,0 +1,9 @@
+{
+    "files": [
+        "myapp.py",
+        "form.ui",
+        "ui_form.py",
+        "support_functions.py",
+        "reboot.sh"
+    ]
+}

@@ -28,6 +28,17 @@ from ui_form import Ui_MYAPP
 #     pyside2-uic form.ui -o ui_form.py
 
 class MYAPP(QWidget):
+    """
+    Hàm khởi tạo của MYAPP
+    + Khởi tạo lớp cha (class QWidget)
+    + Khởi tạo một đối tượng hiển thị Ui_MYAPP() bao gồm các phần tử được định nghĩa trong Ui_MYYAPP
+    + Khởi tạo các biến trạng thái fullscreen_val, sensor_read_val
+    + Khởi tạo picam2 là camera từ libcamera2, bật picam2.
+    + Khởi tạo QPixmap để đọc ảnh dưới dạng QPixmap và hiển thị trên các đối tượng QLabel. 
+    + Khởi tạo biến trạng thái camera_streaming_val, server_streaming_val, people_detection_val và biến đếm số lần nhấn nút FireWarning fire_waring_clicked_count
+    + Khởi chạy các chương trình con chạy song song.
+    + Kết nối các các hàm tới các nút nhấn.
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MYAPP()
@@ -57,33 +68,49 @@ class MYAPP(QWidget):
         self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
         self.ui.FireWarningBar.setVisible(False)
 
+    """
+    Hàm đổi giá trị logic True thành False và ngược lại.
+    NOTE: Vì một cái lý do nào đó mà toán tử ~ không hoạt động :<
+    """
     def _not(self, var):
         if var == True:
-            var = False
+            return False
         else:
-            var = True
-        return var
+            return True
+        return -1
 
+    """
+    Hàm thay đổi chế độ hiển thị FullScreen/Maximized 
+    """
     def _FullSceenButtonAction(self):
         FullSceenButtonAction(self)
 
+    """
+    Hàm thực hiện chức năng reboot.
+    Hoạt động: Đầu tiên set trạng thái của <Notification2> để thông báo sẽ tắt sau 10s - không thể huỷ lệnh này, và sau đó đếm ngược.
+    TODO: Chức năng hiển thị đang lỗi.
+    """
     def _RebootButtonAction(self):
         self.ui.Notification2_Value.setText("Reboot after 10s - CANNOT CANCEL!")
         RebootButtonAction()
 
+    """
+    Hàm đặt lại <Notification1> và <Notification2>.
+    """
     def _ClearAllNotification(self):
         if self.fire_waring_value == False:
             self.fire_waring_clicked_count = 0
             self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
         self.ui.Notification1_Value.setText("<Notification 1>")
         self.ui.Notification2_Value.setText("<Notification 2>")
+
     """
-    Code - Choose index 1 or 2 to be cleared:
+    Hàm đặt lại <Notification1>, <Notification2> có chọn lựa.
+    Code - Chọn <Notification1> hay <Notification2> hay cả 2 sẽ được đặt lại.
         + 01B:  Notification 1
         + 10B:  Notification 2
         + 11B:  Notification 1 & 2
     """
-
     def _ClearNotification(self, code = 3):
         if self.fire_waring_value == False:
             self.fire_waring_clicked_count = 0
@@ -94,32 +121,47 @@ class MYAPP(QWidget):
             self.ui.Notification2_Value.setText("<Notification 2>")
 
     """
-    code - Choose index 1 or 2 to be displayed:
+    Hàm đặt giá trị cho <Notification1>, <Notification2> có chọn lựa.
+    code - Chọn <Notification1> hay <Notification2> hay cả 2 sẽ được đặt lại.
         + 01B:  Notification 1
         + 10B:  Notification 2
         + 11B:  Notification 1 & 2
-    msg  - The message:
-        + The message must less than 20 characters!
+    msg  - Thông điệp được hiển thị:
+        + Thông điệp cần ngắn gọn, dài quá sẽ bị cắt!
     """
-
     def _SetNotification(self, code = 1, msg = ""):
         if code & 1 != 0:
             self.ui.Notification1_Value.setText(msg)
         if code & 2 != 0:
             self.ui.Notification2_Value.setText(msg)
 
+    """
+    Hàm bật/tắt camera. Khi hàm được gọi, sẽ kiểm tra biến trạng thái self.camera_streaming_val:
+    1.  Nếu self.camera_streaming_val = True nghĩa là đang bật:
+            Thoát luồn đang chạy và dừng việc ghi hình ảnh.
+            Hiển thị trạng thái lên UI.
+    2.  Đão giá trị của biến trạng thái self.camera_streaming_val.
+    3.  Nếu self.camera_streaming_val = True nghĩa là chưa bật:
+            Bắt đầu lại picam2.
+            Chờ khoảng 2 giây cho camera khởi động
+            Gọi hàm để tạo lại luồng.
+    """
     def _StartStopCameraButtonAction(self):
         if self.camera_streaming_val == True:
-            self.thread1.exit()
-            self.picam2.stop()
+            # self.thread1.exit()
+            # self.picam2.stop()
             self.ui.Camera_Label.setText("Stopped camera streaming")
-        self.camera_streaming_val = ~ self.camera_streaming_val
+        self.camera_streaming_val = self._not(self.camera_streaming_val)
         if self.camera_streaming_val == True:
             # self.thread1.start()
             self.picam2.start()
             time.sleep(2) # warn-up time
             self._CameraStreaming()
 
+    """
+    Hàm bật tắt tính năng nhận diện người
+    TODO: Phát triển tính năng nhận diện người.
+    """
     def _StartStopPeopleDetection(self):
         if self.people_detection_val == True:
             self.people_detection_val= False
@@ -129,30 +171,54 @@ class MYAPP(QWidget):
         if self.people_detection_val == True:
             self._PeopleDetection()
 
+    """
+    Hàm thực hiện tính năng nhận diện người
+    TODO: Phát triển tính năng nhận diện người.
+    """
     def _PeopleDetection(self):
         PeopleDetection(self)
 
+    """
+    Hàm thực hiện công việc truyền hình ảnh ở một luồng (thread) khác.
+    """
     def _CameraStreaming(self):
+        # Tạo luồng mới
         self.thread1 = QThread()
+        # Tạo đối tượng worker
         self.CameraStreaming = CameraStreaming(self)
+        # Di chuyển đối tượng worker vào luồng đã tạo
         self.CameraStreaming.moveToThread(self.thread1)
+        # Kết nối hàm UpdateData của đối tượng worker đến luồng
         self.thread1.started.connect(self.CameraStreaming.UpdateData)
-        self.CameraStreaming.finished.connect(self.thread1.quit)
-        self.CameraStreaming.finished.connect(self.CameraStreaming.deleteLater)
-        self.thread1.finished.connect(self.thread1.deleteLater)
+        # Kết nối hàm sẽ thực thi khi có tín hiệu finished từ Worker
+        self.CameraStreaming.finished.connect(self.thread1.quit) # Thoát luồng
+        self.CameraStreaming.finished.connect(self.CameraStreaming.deleteLater) # Xoá đối tượng
+        self.thread1.finished.connect(self.thread1.deleteLater) # Xoá luồng
+        # Bắt đầu chạy luồng
         self.thread1.start()
 
+        """
+    Hàm bật tắt đồng bộ máy chủ.
+    1.  Đão giá trị biến trạng thái self.server_streaming_val.
+    2.  Kiểm tra nếu self.server_streaming_val = True nghĩa là chưa bật
+            Cập nhật trạng thái "Connected" trên UI
+            Gọi chương trình khởi chạy,
+        Nếu không (self.server_streaming_val = False):
+            Cập nhật trạng thái "Disconnected" trên UI
+        """
     def _StartStopServerSync(self):
+        #if self.server_streaming_val == True:
+        #    self.thread2.exit()
+        self.server_streaming_val = self._not(self.server_streaming_val)
         if self.server_streaming_val == True:
-            self.thread2.exit()
-        self.server_streaming_val = ~ self.server_streaming_val
-        if self.server_streaming_val == True:
-            # self.thread2.start()
-            self._ServerStreaming()
             self.ui.ServerConnection_Value.setText("Connected")
+            self._ServerStreaming()
         else:
             self.ui.ServerConnection_Value.setText("Disconnected")
 
+    """
+    Hàm thực hiện công việc đọc dữ liệu cảm biến và cập nhật lên UI ở luồng song song.
+    """
     def _ServerStreaming(self):
         self.ui.ServerConnection_Value.setText("Connected")
         self.thread2 = QThread()
@@ -164,6 +230,12 @@ class MYAPP(QWidget):
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.thread2.start()
 
+    """
+    Hàm đặt tên cho nút FireWarningButton.
+        Tham số count - Cho biết số lần nút FireWarning được nhấn.
+        Nếu biến count = 0: Hàm sẽ đặt tên FireWarningButton là "Set/Reset FireAlert".
+        Ngược lại "Set/Reset FireAlert(count)".
+    """
     def _SetFireWarningButtonTitle(self, count = 0):
         # "count = 0" means no countdown.
         if count == 0 :
@@ -172,6 +244,16 @@ class MYAPP(QWidget):
             # "count > 0" meaning the button has been pressed count times.
             self.ui.SetResetFireAlert_Button.setText("Set/Reset FireAlert({})".format(count))
 
+    """
+    Hàm bật tắt cảnh báo cháy thủ công.
+    1.  Kiểm tra fire_waring_clicked_count - số lần nhấn nút đã đủ chưa, nếu chưa đủ chỉ cập nhật số lần nhấn.
+    2.  Nếu đủ số lần nhấn nút, kiểm tra biến trạng thái báo cháy self.fire_waring_value 
+            Nếu biến cảnh báo có giá trị True:
+                Thay đổi trạng thái cảnh báo, xoá thông báo báo cháy.
+            Ngược lại:
+                Thay đổi trạng thái cảnh báo, hiển thị thông báo báo cháy.
+                Gọi hàm thực hiện công việc cảnh báo cháy.
+    """
     def _SetResetFireWaring(self):
         self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
         if self.fire_waring_clicked_count < 10:
@@ -181,12 +263,15 @@ class MYAPP(QWidget):
         self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
 
         if self.fire_waring_value == True:
-            self.thread3.exit()
+            # self.thread3.exit()
             self._ClearNotification(code=1)
         self.fire_waring_value = self._not(self.fire_waring_value)
         if self.fire_waring_value == True:
             self._FireWaring()
 
+    """
+    Hàm thực hiện công việc cảnh báo cháy ở luồng khác.
+    """
     def _FireWaring(self):
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)
@@ -197,6 +282,9 @@ class MYAPP(QWidget):
         self.thread3.finished.connect(self.thread3.deleteLater)
         self.thread3.start()
 
+    """
+    Hàm làm mới ngay lập tức giá trị của cảm biến.
+    """
     def _RefreshButtonAction(self):
         self.ui.temp_value.setText(str(GetTemperature()) + " oC")
         self.sensor_read_val = ~ self.sensor_read_val
@@ -205,6 +293,9 @@ class MYAPP(QWidget):
         else:
             self.thread0.exit()
 
+    """
+        Hàm thực hiện công việc đọc giá trị cảm biến ở luồng khác.
+    """
     def _SensorReading(self):
         self.thread0 = QThread()
         self.SensorReading = SensorReading(self)
@@ -215,12 +306,16 @@ class MYAPP(QWidget):
         self.thread0.finished.connect(self.thread0.deleteLater)
         self.thread0.start()
 
+    """
+    Hàm huỷ, xoá các chân IO đã đặt.
+    NOTE: IO được khai báo ở tập tin support_functions.py.
+    """
     def __del__():
         IO.cleanup()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = MYAPP()
-    #widget.showFullScreen()
-    widget.showNormal()
+    widget.showFullScreen()
+    # widget.showNormal()
     sys.exit(app.exec())

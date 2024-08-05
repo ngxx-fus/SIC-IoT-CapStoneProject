@@ -8,7 +8,9 @@ from random import randint
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from picamera2 import Picamera2, Preview
 
-
+"""
+Worker class
+"""
 class FireWarning(QObject):
     finished = pyqtSignal()
     def __init__(self, myapp, BuzzerPin = 21):
@@ -36,7 +38,9 @@ class FireWarning(QObject):
         self.myapp.ui.FireWarningBar.setVisible(False)
         IO.cleanup()
         self.finished.emit()
-
+"""
+Worker class
+"""
 class CameraStreaming(QObject):
     finished = pyqtSignal()
     def __init__(self, myapp):
@@ -44,21 +48,17 @@ class CameraStreaming(QObject):
         self.myapp = myapp
 
     def UpdateData(self):
-        msg = "Running demo mode"
-        dots = "."
         while self.myapp.camera_streaming_val == True:
-            # self.myapp.ui.Camera_Label.setText(msg + dots)
-            # dots = dots + "."
-            # if len(dots) > 10:
-            #     dots = "."
-
             self.myapp.picam2.capture_file("img.jpg")
             self.myapp.pixmap.load("img.jpg")
             self.myapp.ui.Camera_Label.setPixmap(self.myapp.pixmap.scaled(QSize(301, 201)))
-
+            self.myapp.picam2.stop()
             time.sleep(0.05)
         self.finished.emit()
 
+"""
+Worker class
+"""
 class ServerStreaming(QObject):
     finished = pyqtSignal()
     def __init__(self, myapp):
@@ -75,6 +75,9 @@ class ServerStreaming(QObject):
             time.sleep(1)
         self.finished.emit()
 
+"""
+Worker class
+"""
 class SensorReading(QObject):
     finished = pyqtSignal()
     def __init__(self, myapp):

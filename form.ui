@@ -86,7 +86,7 @@
      <x>390</x>
      <y>90</y>
      <width>341</width>
-     <height>281</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="title">
@@ -210,11 +210,24 @@
      <string>CO2:</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="FullScreenButton">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>230</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Full Screen</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="RefreshButton">
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>250</y>
+      <y>200</y>
       <width>80</width>
       <height>22</height>
      </rect>
@@ -358,58 +371,19 @@
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>380</y>
+     <y>360</y>
      <width>341</width>
-     <height>91</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
     <string>System configuration</string>
    </property>
-   <widget class="QPushButton" name="RebootButton">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>91</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Reboot</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="FullScreenButton">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>30</y>
-      <width>91</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>FullScreen</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="ServerSyncButton">
-    <property name="geometry">
-     <rect>
-      <x>239</x>
-      <y>30</y>
-      <width>91</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ServerSync</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="SetResetFireAlert_Button">
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>60</y>
+      <y>50</y>
       <width>151</width>
       <height>22</height>
      </rect>
@@ -422,13 +396,65 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
+      <y>50</y>
       <width>141</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>Clear Notification</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="AutoStartFireAlert">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>141</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Auto Start Fire Alert</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="AutoStopFireAlert">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>80</y>
+      <width>151</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Auto Stop Fire Alert</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ServerSyncButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>141</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Server SYNC</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="RebootButton">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>20</y>
+      <width>151</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reboot</string>
     </property>
    </widget>
   </widget>

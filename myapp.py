@@ -41,6 +41,7 @@ class MYAPP(QWidget):
     + Kết nối các các hàm tới các nút nhấn.
     NOTE:
     + self.auto_stop_fire_alert - Năng khi có cháy xảy ra, cảm biến hư hỏng, gởi dữ liệu sai, và tự động tắt cảnh báo.
+    + self.auto_start_fire_alert -
     """
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -56,6 +57,7 @@ class MYAPP(QWidget):
         self.server_streaming_val = True
         self.people_detection_val = False
         self.fire_waring_value = False
+        self.auto_start_fire_alert = True
         self.auto_stop_fire_alert = False 
         self.fire_waring_clicked_count = 0
         self._CameraStreaming()
@@ -71,7 +73,11 @@ class MYAPP(QWidget):
         self.ui.ClearNotiButton.clicked.connect(self._ClearAllNotification)
         self.ui.SetResetFireAlert_Button.clicked.connect(self._SetResetFireWaring)
         self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
+        self.ui.AutoStartFireAlert.clicked.connect(self._SetAutoStartFireAlert)
+        self.ui.AutoStopFireAlert.clicked.connect(self._SetAutoStopFireAlert)
         self.ui.FireWarningBar.setVisible(False)
+        self._SetNotification(1, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
+        self._SetNotification(2, "Auto STOP Fire Alert: {}".format(self.auto_stop_fire_alert))
         # logger
         #TODO: create logger
 
@@ -91,6 +97,20 @@ class MYAPP(QWidget):
     """
     def _FullSceenButtonAction(self):
         FullSceenButtonAction(self)
+
+    """
+
+    """
+    def _SetAutoStartFireAlert(self):
+        self.auto_start_fire_alert = self._not(self.auto_start_fire_alert)
+        self._SetNotification(2, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
+
+    """
+
+    """
+    def _SetAutoStopFireAlert(self):
+        self.auto_stop_fire_alert = self._not(self.auto_stop_fire_alert)
+        self._SetNotification(2, "Auto STOP Fire Alert: {}".format(self.auto_stop_fire_alert))
 
     """
     Hàm thực hiện chức năng reboot.
@@ -137,9 +157,9 @@ class MYAPP(QWidget):
         + Thông điệp cần ngắn gọn, dài quá sẽ bị cắt!
     """
     def _SetNotification(self, code = 1, msg = ""):
-        if code & 1 != 0:
+        if code & 1 == 1:
             self.ui.Notification1_Value.setText(msg)
-        if code & 2 != 0:
+        if code & 2 == 2:
             self.ui.Notification2_Value.setText(msg)
 
     """
@@ -265,16 +285,17 @@ class MYAPP(QWidget):
     def _SetResetFireWaring(self, priority_flag = False, priority_setter = False):
         # Priority mode
         if priority_flag == True:
-            self.fire_waring_clicked_count=0
-            self._SetFireWarningButtonTitle()
-            if priority_setter == True:
+            self._SetFireWarningButtonTitle(count=0)
+            self.fire_waring_clicked_count = 0
+            if priority_setter == True and self.fire_waring_value == False:
                 self.fire_waring_value = True
                 self._FireWaring()
-            else:
+            elif priority_setter == False and self.fire_waring_value == True:
                 self.thread3.exit()
                 self.fire_waring_value = False
                 self._ClearNotification(code=1)
-            return #1
+            else:
+                return #1
         
         # Normal mode
         self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1

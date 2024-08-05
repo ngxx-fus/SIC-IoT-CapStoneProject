@@ -97,6 +97,7 @@ class SensorReadingAndServerStreaming(QObject):
     def isFlaming(self):
         if self.Flame > 0:
             if self.Temp > 40.0:
+                return True
                 if self.CO2 > 50:
                     if self.Humid < 30:
                         if PredictFlaming() > 80:
@@ -108,9 +109,10 @@ class SensorReadingAndServerStreaming(QObject):
     """
     def AutoSetFireAlert(self):
         if self.isFlaming() == True:
-            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
-        elif auto_stop_fire_alert == True:
-            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
+            if self.myapp.fire_waring_value == False and self.myapp.auto_start_fire_alert == True:
+                self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
+        elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
+            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
 
     """
     Work based on data from sensor.
@@ -149,6 +151,9 @@ class FireWarning(QObject):
         IO.setup(self.BuzzerPin, IO.OUT)
 
     def FireWarningAction(self):
+        self.myapp.ui.RebootButton.setEnabled(False)
+        self.myapp.ui.Camera_Control.setEnabled(False)
+        self.myapp.ui.ServerSyncButton.setEnabled(False)
         msg = "FireWarning"
         dots = "!"
         while self.myapp.fire_waring_value == True:
@@ -163,7 +168,10 @@ class FireWarning(QObject):
             self.myapp.ui.FireWarningBar.setVisible(False)
             time.sleep(0.5)
         self.myapp.ui.FireWarningBar.setVisible(False)
-        IO.cleanup()
+        #IO.cleanup()
+        self.myapp.ui.RebootButton.setEnabled(True)
+        self.myapp.ui.Camera_Control.setEnabled(True)
+        self.myapp.ui.ServerSyncButton.setEnabled(True)
         self.finished.emit()
 """
 Worker class

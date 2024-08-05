@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import time
+import logging
 import PySide6.QtGui
 
 from picamera2 import Picamera2, Preview
@@ -54,8 +55,9 @@ class MYAPP(QWidget):
         self.people_detection_val = False
         self.fire_waring_value = False
         self.fire_waring_clicked_count = 0
-        self._SensorReading()
-        self._CameraStreaming()
+        # self._SensorReading()
+        # self._ServerStreaming()
+        self._SensorReadingAndServerStreaming()
         self._ServerStreaming()
         # button connect
         self.ui.FullScreenButton.clicked.connect(self._FullSceenButtonAction)
@@ -67,6 +69,8 @@ class MYAPP(QWidget):
         self.ui.SetResetFireAlert_Button.clicked.connect(self._SetResetFireWaring)
         self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
         self.ui.FireWarningBar.setVisible(False)
+        # logger
+        #TODO: create logger
 
     """
     Hàm đổi giá trị logic True thành False và ngược lại.
@@ -206,28 +210,35 @@ class MYAPP(QWidget):
             Cập nhật trạng thái "Disconnected" trên UI
         """
     def _StartStopServerSync(self):
-        if self.server_streaming_val == True:
-           self.thread2.exit()
+        # if self.server_streaming_val == True:
+        #    self.thread2.exit()
         self.server_streaming_val = self._not(self.server_streaming_val)
-        if self.server_streaming_val == True:
-            self.ui.ServerConnection_Value.setText("Connected")
-            self._ServerStreaming()
-        else:
-            self.ui.ServerConnection_Value.setText("Disconnected")
+        # if self.server_streaming_val == True:
+        #     self.ui.ServerConnection_Value.setText("Connected")
+        #     self._ServerStreaming()
+        # else:
+        #     self.ui.ServerConnection_Value.setText("Disconnected")
 
     """
     Hàm thực hiện công việc đọc dữ liệu cảm biến và cập nhật lên UI ở luồng song song.
     """
     def _ServerStreaming(self):
-        self.ui.ServerConnection_Value.setText("Connected")
-        self.thread2 = QThread()
-        self.ServerStreaming = ServerStreaming(self)
-        self.ServerStreaming.moveToThread(self.thread2)
-        self.thread2.started.connect(self.ServerStreaming.UpdateData)
-        self.ServerStreaming.finished.connect(self.thread2.quit)
-        self.ServerStreaming.finished.connect(self.ServerStreaming.deleteLater)
-        self.thread2.finished.connect(self.thread2.deleteLater)
-        self.thread2.start()
+        msg = """
+            This function has been deleted after merged two classes 
+            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+            to prevent 'CRASHED' from simultaneously using GPIO BUS.
+        """
+        print("Called: _ServerStreaming()")
+        print(msg)
+        # self.ui.ServerConnection_Value.setText("Connected")
+        # self.thread2 = QThread()
+        # self.ServerStreaming = ServerStreaming(self)
+        # self.ServerStreaming.moveToThread(self.thread2)
+        # self.thread2.started.connect(self.ServerStreaming.UpdateData)
+        # self.ServerStreaming.finished.connect(self.thread2.quit)
+        # self.ServerStreaming.finished.connect(self.ServerStreaming.deleteLater)
+        # self.thread2.finished.connect(self.thread2.deleteLater)
+        # self.thread2.start()
 
     """
     Hàm đặt tên cho nút FireWarningButton.
@@ -296,12 +307,32 @@ class MYAPP(QWidget):
         Hàm thực hiện công việc đọc giá trị cảm biến ở luồng khác.
     """
     def _SensorReading(self):
+        msg = """
+            This function has been deleted after merged two classes 
+            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+            to prevent 'CRASHED' from simultaneously using GPIO BUS.
+        """
+        print("Called: _SensorReading()")
+        print(msg)
+        # self.thread0 = QThread()
+        # self.SensorReading = SensorReading(self)
+        # self.SensorReading.moveToThread(self.thread0)
+        # self.thread0.started.connect(self.SensorReading.UpdateData)
+        # self.SensorReading.finished.connect(self.thread0.quit)
+        # self.SensorReading.finished.connect(self.SensorReading.deleteLater)
+        # self.thread0.finished.connect(self.thread0.deleteLater)
+        # self.thread0.start()
+
+    """
+    Hàm thực hiện việc đọc cảm biến, cập nhật giá trị cảm biến lên UI, đồng bộ dữ liệu lên máy chủ ở luồng (thread) khác.
+    """
+    def _SensorReadingAndServerStreaming(self):
         self.thread0 = QThread()
-        self.SensorReading = SensorReading(self)
-        self.SensorReading.moveToThread(self.thread0)
-        self.thread0.started.connect(self.SensorReading.UpdateData)
-        self.SensorReading.finished.connect(self.thread0.quit)
-        self.SensorReading.finished.connect(self.SensorReading.deleteLater)
+        self.SensorReadingAndServerStreaming = SensorReadingAndServerStreaming(self)
+        self.SensorReadingAndServerStreaming.moveToThread(self.thread0)
+        self.thread0.started.connect(self.SensorReadingAndServerStreaming.Working)
+        self.SensorReadingAndServerStreaming.finished.connect(self.thread0.quit)
+        self.SensorReadingAndServerStreaming.finished.connect(self.SensorReadingAndServerStreaming.deleteLater)
         self.thread0.finished.connect(self.thread0.deleteLater)
         self.thread0.start()
 

@@ -4,13 +4,125 @@ import subprocess
 import RPi.GPIO as IO
 from datetime import datetime
 from PySide6 import QtGui
-from  PySide6.QtCore import QSize
+from PySide6.QtCore import QSize
 from random import randint
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from picamera2 import Picamera2, Preview
 
+############################# FUNCTIONS #################################
 """
-Worker class
+Hàm trả về dạng chuỗi của val nếu không âm,ngược lại trả về "--".
+Cho phép chèn thêm tiền tố (prefix) và hậu tố (suffix)
+"""
+def ValueFormat(val, prefix = '', suffix = ''):
+    if val >= 0:
+        return prefix + str(val) + suffix
+    return prefix + '--' + suffix
+
+
+def FullSceenButtonAction(MYAPP):
+    MYAPP.fullscreen_val = ~ MYAPP.fullscreen_val
+    if MYAPP.fullscreen_val == True:
+        MYAPP.showFullScreen()
+    else:
+        MYAPP.showNormal()
+
+def RebootButtonAction(myapp):
+    sec = 10
+    while sec > 0:
+        sec = sec - 1
+        time.sleep(1)
+    subprocess.Popen("sh reboot.sh", shell=True)
+
+def GetTemperature():
+    time.sleep(1)
+    return randint(17, 50)
+
+def GetHumidity():
+    return randint(30, 70)
+
+def GetCO2():
+    return randint(10, 30)
+
+def GetFlame():
+    return randint(0, 50)/10.0
+
+def PeopleDetection(myapp):
+    if myapp.camera_streaming_val == False:
+        return
+    myapp._SetNotification(code=2,msg="PeopleDetection: No longer service!")
+    return
+
+############################# CLASSES #################################
+
+"""
+Worker class: SensorReadingAndServerStreaming
+To read sensor data, update value onto UI, SYNC to server.
+"""
+class SensorReadingAndServerStreaming(QObject):
+    finished = pyqtSignal()
+    def __init__(self, myapp):
+        super().__init__(parent=None)
+        self.myapp = myapp
+        self.Temp = 0.0
+        self.Humid = 0.0
+        self.CO2 = 0.0
+        self.Flame = 0.0
+
+    """
+    Update self.Temp, self.Humid, self.CO2, self.Flame.
+    Return Tuple includes sensor data
+    """
+    def GetDataSensor(self):
+        self.Temp = GetTemperature()
+        self.Humid = GetHumidity()
+        self.CO2 = GetCO2()
+        self.Flame = GetFlame()
+        return (self.Temp, self.Humid, self.CO2, self.Flame)
+
+    """
+    Update data onto UI.
+    """
+    def UpdateUI(self):
+        self.myapp.ui.temp_value.setText(ValueFormat(self.Temp, suffix=" oC"))
+        self.myapp.ui.humid_value.setText(ValueFormat(self.Humid, suffix=" %"))
+        self.myapp.ui.CO2_value.setText(ValueFormat(self.CO2, suffix=" %"))
+
+    """
+    Server sync.
+    """
+    def ServerSYNC(self):
+        msg = "Connected! Sent:"
+        msg1 = ValueFormat(self.Temp, "Temp:", "oC,")
+        msg2 = ValueFormat(self.Humid, "Humid:", "%,")
+        msg3 = ValueFormat(self.CO2, "CO2:", "%,")
+        msg4 = ValueFormat(self.CO2, "Flame:", ",")
+        self.myapp.ui.ServerConnection_Value.setText(msg+msg1+msg2+msg3+msg4)
+
+    def SetFireAlert(self):
+        Set
+
+    """
+    Work based on data from sensor.
+    """
+    def Working(self):
+        # Doing and doing
+        while True:
+            # reading sensor
+            self.GetDataSensor()
+            time.sleep(1)
+            # processing
+            if self.myapp.sensor_read_val == True:
+                self.UpdateUI()
+            if self.myapp.server_streaming_val == True:
+                self.ServerSYNC()
+        
+        # Send back finished signal !
+        self.finished.emit()
+
+"""
+Worker class: FireWarning
+Running Warning actions.
 """
 class FireWarning(QObject):
     finished = pyqtSignal()
@@ -58,68 +170,46 @@ class CameraStreaming(QObject):
         self.finished.emit()
 
 """
-Worker class
+Worker class: ServerStreaming
+NOTE:
+    This class has been deleted after merged two classes
+    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+    to prevent 'CRASHED' from simultaneously using GPIO BUS.
 """
-class ServerStreaming(QObject):
-    finished = pyqtSignal()
-    def __init__(self, myapp):
-        super().__init__(parent=None)
-        self.myapp = myapp
+# class ServerStreaming(QObject):
+#     finished = pyqtSignal()
+#     def __init__(self, myapp):
+#         super().__init__(parent=None)
+#         self.myapp = myapp
 
-    def UpdateData(self):
-        msg = "Sent "
-        while self.myapp.server_streaming_val == True:
-            msg1 = str(GetTemperature()) + " oC "
-            msg2 = str(GetHumidity()) + " % "
-            msg3 = "--"
-            self.myapp.ui.ServerConnection_Value.setText( msg + msg1 + msg2 + msg3)
-            time.sleep(1)
-        self.finished.emit()
+#     def UpdateData(self):
+#         msg = "Sent "
+#         while self.myapp.server_streaming_val == True:
+#             msg1 = str(GetTemperature()) + " oC "
+#             msg2 = str(GetHumidity()) + " % "
+#             msg3 = "--"
+#             self.myapp.ui.ServerConnection_Value.setText( msg + msg1 + msg2 + msg3)
+#             time.sleep(1)
+#         self.finished.emit()
 
 """
-Worker class
+Worker class: SensorReading
+NOTE:
+    This class has been deleted after merged two classes
+    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+    to prevent 'CRASHED' from simultaneously using GPIO BUS.
 """
-class SensorReading(QObject):
-    finished = pyqtSignal()
-    def __init__(self, myapp):
-        super().__init__(parent=None)
-        self.myapp = myapp
+# class SensorReading(QObject):
+#     finished = pyqtSignal()
+#     def __init__(self, myapp):
+#         super().__init__(parent=None)
+#         self.myapp = myapp
 
-    def UpdateData(self):
-        while self.myapp.sensor_read_val == True:
-            self.myapp.ui.temp_value.setText(str(GetTemperature()) + " oC")
-            self.myapp.ui.humid_value.setText(str(GetHumidity()) + " %")
-            self.myapp.ui.CO2_value.setText("--")
-            time.sleep(1)
-        self.finished.emit()
+#     def UpdateData(self):
+#         while self.myapp.sensor_read_val == True:
+#             self.myapp.ui.temp_value.setText(str(GetTemperature()) + " oC")
+#             self.myapp.ui.humid_value.setText(str(GetHumidity()) + " %")
+#             self.myapp.ui.CO2_value.setText("--")
+#             time.sleep(1)
+#         self.finished.emit()
 
-
-def FullSceenButtonAction(MYAPP):
-    MYAPP.fullscreen_val = ~ MYAPP.fullscreen_val
-    if MYAPP.fullscreen_val == True:
-        MYAPP.showFullScreen()
-    else:
-        MYAPP.showNormal()
-
-def RebootButtonAction(myapp):
-    sec = 10
-    while sec > 0:
-        sec = sec - 1
-        time.sleep(1)
-    subprocess.Popen("sh reboot.sh", shell=True)
-
-def GetTemperature():
-    time.sleep(1)
-    return randint(17, 50)
-
-def GetHumidity():
-    return randint(30, 70)
-
-def GetCO2():
-    return randint(10, 30)
-
-def PeopleDetection(myapp):
-    if myapp.camera_streaming_val == False:
-        return
-    myapp._SetNotification(code=2,msg="PeopleDetection: No longer service!")
-    return

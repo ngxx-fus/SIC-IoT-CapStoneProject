@@ -82,11 +82,11 @@ class SensorReadingAndServerStreaming(QObject):
     Server sync.
     """
     def ServerSYNC(self):
-        msg = "Connected! Sent:"
-        msg1 = ValueFormat(self.Temp, "Temp:", "oC,")
-        msg2 = ValueFormat(self.Humid, "Humid:", "%,")
-        msg3 = ValueFormat(self.CO2, "CO2:", "%,")
-        msg4 = ValueFormat(self.CO2, "Flame:", ",")
+        msg = "OK! Sent:"
+        msg1 = ValueFormat(self.Temp, "T", "oC, ")
+        msg2 = ValueFormat(self.Humid, "H", "%, ")
+        msg3 = ValueFormat(self.CO2, "C", "%, ")
+        msg4 = ValueFormat(self.Flame, "F")
         self.myapp.ui.ServerConnection_Value.setText(msg+msg1+msg2+msg3+msg4)
         ServerSYNC()
 

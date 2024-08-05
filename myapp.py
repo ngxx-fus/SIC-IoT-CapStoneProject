@@ -184,7 +184,7 @@ class MYAPP(QWidget):
     def _CameraStreaming(self):
         #
         self.picam2.start()
-        time.sleep(2) # warn-up time
+        time.sleep(1) # warn-up time
         # Tạo luồng mới
         self.thread1 = QThread()
         # Tạo đối tượng worker
@@ -302,10 +302,11 @@ class MYAPP(QWidget):
             SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
             to prevent 'CRASHED' from simultaneously using GPIO BUS.
         """
-        Data = SensorReadingAndServerStreaming.GetDataSensor()
+        Data = self.SensorReadingAndServerStreaming.GetDataSensor()
         self.ui.temp_value.setText(ValueFormat(Data[0], suffix=" oC"))
+        self.ui.humid_value.setText(ValueFormat(Data[1], suffix=" %"))
+        self.ui.CO2_value.setText(ValueFormat(Data[2], suffix=" %"))
         self.sensor_read_val = self._not(self.sensor_read_val)
-
 
     """
         Hàm thực hiện công việc đọc giá trị cảm biến ở luồng khác.

@@ -14,4 +14,4 @@ def ServerSYNC():
         Please try again latter!
     """
     print("Called: Server.ServerSYNC")
-    print(msg)
+    #print(msg)

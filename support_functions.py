@@ -2,6 +2,7 @@ import numpy
 import time
 import subprocess
 import RPi.GPIO as IO
+from datetime import datetime
 from PySide6 import QtGui
 from  PySide6.QtCore import QSize
 from random import randint
@@ -52,8 +53,8 @@ class CameraStreaming(QObject):
             self.myapp.picam2.capture_file("img.jpg")
             self.myapp.pixmap.load("img.jpg")
             self.myapp.ui.Camera_Label.setPixmap(self.myapp.pixmap.scaled(QSize(301, 201)))
-            self.myapp.picam2.stop()
-            time.sleep(0.05)
+            time.sleep(0.041666)
+        self.myapp.picam2.stop()
         self.finished.emit()
 
 """

@@ -148,14 +148,10 @@ class MYAPP(QWidget):
     """
     def _StartStopCameraButtonAction(self):
         if self.camera_streaming_val == True:
-            # self.thread1.exit()
-            # self.picam2.stop()
+            self.thread1.exit()
             self.ui.Camera_Label.setText("Stopped camera streaming")
         self.camera_streaming_val = self._not(self.camera_streaming_val)
         if self.camera_streaming_val == True:
-            # self.thread1.start()
-            self.picam2.start()
-            time.sleep(2) # warn-up time
             self._CameraStreaming()
 
     """
@@ -182,6 +178,9 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc truyền hình ảnh ở một luồng (thread) khác.
     """
     def _CameraStreaming(self):
+        #
+        self.picam2.start()
+        time.sleep(2) # warn-up time
         # Tạo luồng mới
         self.thread1 = QThread()
         # Tạo đối tượng worker
@@ -197,7 +196,7 @@ class MYAPP(QWidget):
         # Bắt đầu chạy luồng
         self.thread1.start()
 
-        """
+    """
     Hàm bật tắt đồng bộ máy chủ.
     1.  Đão giá trị biến trạng thái self.server_streaming_val.
     2.  Kiểm tra nếu self.server_streaming_val = True nghĩa là chưa bật
@@ -207,8 +206,8 @@ class MYAPP(QWidget):
             Cập nhật trạng thái "Disconnected" trên UI
         """
     def _StartStopServerSync(self):
-        #if self.server_streaming_val == True:
-        #    self.thread2.exit()
+        if self.server_streaming_val == True:
+           self.thread2.exit()
         self.server_streaming_val = self._not(self.server_streaming_val)
         if self.server_streaming_val == True:
             self.ui.ServerConnection_Value.setText("Connected")
@@ -263,7 +262,7 @@ class MYAPP(QWidget):
         self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
 
         if self.fire_waring_value == True:
-            # self.thread3.exit()
+            self.thread3.exit()
             self._ClearNotification(code=1)
         self.fire_waring_value = self._not(self.fire_waring_value)
         if self.fire_waring_value == True:

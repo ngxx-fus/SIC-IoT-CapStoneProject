@@ -36,9 +36,11 @@ class MYAPP(QWidget):
     + Khởi tạo các biến trạng thái fullscreen_val, sensor_read_val
     + Khởi tạo picam2 là camera từ libcamera2, bật picam2.
     + Khởi tạo QPixmap để đọc ảnh dưới dạng QPixmap và hiển thị trên các đối tượng QLabel. 
-    + Khởi tạo biến trạng thái camera_streaming_val, server_streaming_val, people_detection_val và biến đếm số lần nhấn nút FireWarning fire_waring_clicked_count
+    + Khởi tạo biến trạng thái camera_streaming_val, server_streaming_val, people_detection_val, self.auto_stop_fire_alert và biến đếm số lần nhấn nút FireWarning fire_waring_clicked_count
     + Khởi chạy các chương trình con chạy song song.
     + Kết nối các các hàm tới các nút nhấn.
+    NOTE:
+    + self.auto_stop_fire_alert - Năng khi có cháy xảy ra, cảm biến hư hỏng, gởi dữ liệu sai, và tự động tắt cảnh báo.
     """
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -54,6 +56,7 @@ class MYAPP(QWidget):
         self.server_streaming_val = True
         self.people_detection_val = False
         self.fire_waring_value = False
+        self.auto_stop_fire_alert = False 
         self.fire_waring_clicked_count = 0
         self._CameraStreaming()
         # self._SensorReading()
@@ -151,12 +154,14 @@ class MYAPP(QWidget):
             Gọi hàm để tạo lại luồng.
     """
     def _StartStopCameraButtonAction(self):
+        self.ui.Camera_Control.setEnabled(False)
         if self.camera_streaming_val == True:
             self.thread1.exit()
             self.ui.Camera_Label.setText("Stopped camera streaming")
         self.camera_streaming_val = self._not(self.camera_streaming_val)
         if self.camera_streaming_val == True:
             self._CameraStreaming()
+        self.ui.Camera_Control.setEnabled(True)
 
     """
     Hàm bật tắt tính năng nhận diện người
@@ -208,16 +213,9 @@ class MYAPP(QWidget):
             Gọi chương trình khởi chạy,
         Nếu không (self.server_streaming_val = False):
             Cập nhật trạng thái "Disconnected" trên UI
-        """
+    """
     def _StartStopServerSync(self):
-        # if self.server_streaming_val == True:
-        #    self.thread2.exit()
         self.server_streaming_val = self._not(self.server_streaming_val)
-        # if self.server_streaming_val == True:
-        #     self.ui.ServerConnection_Value.setText("Connected")
-        #     self._ServerStreaming()
-        # else:
-        #     self.ui.ServerConnection_Value.setText("Disconnected")
 
     """
     Hàm thực hiện công việc đọc dữ liệu cảm biến và cập nhật lên UI ở luồng song song.
@@ -264,14 +262,28 @@ class MYAPP(QWidget):
                 Thay đổi trạng thái cảnh báo, hiển thị thông báo báo cháy.
                 Gọi hàm thực hiện công việc cảnh báo cháy.
     """
-    def _SetResetFireWaring(self):
+    def _SetResetFireWaring(self, priority_flag = False, priority_setter = False):
+        # Priority mode
+        if priority_flag == True:
+            self.fire_waring_clicked_count=0
+            self._SetFireWarningButtonTitle()
+            if priority_setter == True:
+                self.fire_waring_value = True
+                self._FireWaring()
+            else:
+                self.thread3.exit()
+                self.fire_waring_value = False
+                self._ClearNotification(code=1)
+            return #1
+        
+        # Normal mode
         self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
         if self.fire_waring_clicked_count < 10:
             self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
             return
         self.fire_waring_clicked_count = 0
         self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
-
+        
         if self.fire_waring_value == True:
             self.thread3.exit()
             self._ClearNotification(code=1)

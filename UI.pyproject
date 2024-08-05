@@ -5,6 +5,7 @@
         "ui_form.py",
         "Sensor.py",
         "Server.py",
+        "Predict.py",
         "support_functions.py",
         "reboot.sh",
         "start_my_app.sh"

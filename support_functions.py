@@ -11,6 +11,7 @@ from picamera2 import Picamera2, Preview
 
 from Sensor import GetTemperature, GetHumidity, GetCO2, GetFlame
 from Server import ServerSYNC
+from Predict import PredictFlaming
 
 ############################# FUNCTIONS #################################
 """
@@ -90,8 +91,26 @@ class SensorReadingAndServerStreaming(QObject):
         self.myapp.ui.ServerConnection_Value.setText(msg+msg1+msg2+msg3+msg4)
         ServerSYNC()
 
-    def SetFireAlert(self):
-        Set
+    """
+    The conclusion of whether there is a fire or not is based on the values ​​obtained from the sensors and predictions from machine learning.
+    """
+    def isFlaming(self):
+        if self.Flame > 0:
+            if self.Temp > 40.0:
+                if self.CO2 > 50:
+                    if self.Humid < 30:
+                        if PredictFlaming() > 80:
+                            return True
+        return False
+
+    """
+    Auto set FireAlert based on isFlaming()
+    """
+    def AutoSetFireAlert(self):
+        if self.isFlaming() == True:
+            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
+        elif auto_stop_fire_alert == True:
+            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
 
     """
     Work based on data from sensor.
@@ -105,11 +124,13 @@ class SensorReadingAndServerStreaming(QObject):
             # processing
             if self.myapp.sensor_read_val == True:
                 self.UpdateUI()
+
             if self.myapp.server_streaming_val == True:
                 self.ServerSYNC()
             else:
                 self.myapp.ui.ServerConnection_Value.setText("Stopped by USER")
-        
+
+            self.AutoSetFireAlert()
         # Send back finished signal !
         self.finished.emit()
 

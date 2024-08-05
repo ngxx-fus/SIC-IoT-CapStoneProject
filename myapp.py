@@ -55,10 +55,10 @@ class MYAPP(QWidget):
         self.people_detection_val = False
         self.fire_waring_value = False
         self.fire_waring_clicked_count = 0
+        self._CameraStreaming()
         # self._SensorReading()
         # self._ServerStreaming()
         self._SensorReadingAndServerStreaming()
-        self._ServerStreaming()
         # button connect
         self.ui.FullScreenButton.clicked.connect(self._FullSceenButtonAction)
         self.ui.RefreshButton.clicked.connect(self._RefreshButtonAction)

@@ -2,12 +2,15 @@ import numpy
 import time
 import subprocess
 import RPi.GPIO as IO
+from random import randint
 from datetime import datetime
 from PySide6 import QtGui
 from PySide6.QtCore import QSize
-from random import randint
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from picamera2 import Picamera2, Preview
+
+from Sensor import GetTemperature, GetHumidity, GetCO2, GetFlame
+from Server import ServerSYNC
 
 ############################# FUNCTIONS #################################
 """
@@ -33,19 +36,6 @@ def RebootButtonAction(myapp):
         sec = sec - 1
         time.sleep(1)
     subprocess.Popen("sh reboot.sh", shell=True)
-
-def GetTemperature():
-    time.sleep(1)
-    return randint(17, 50)
-
-def GetHumidity():
-    return randint(30, 70)
-
-def GetCO2():
-    return randint(10, 30)
-
-def GetFlame():
-    return randint(0, 50)/10.0
 
 def PeopleDetection(myapp):
     if myapp.camera_streaming_val == False:
@@ -98,6 +88,7 @@ class SensorReadingAndServerStreaming(QObject):
         msg3 = ValueFormat(self.CO2, "CO2:", "%,")
         msg4 = ValueFormat(self.CO2, "Flame:", ",")
         self.myapp.ui.ServerConnection_Value.setText(msg+msg1+msg2+msg3+msg4)
+        ServerSYNC()
 
     def SetFireAlert(self):
         Set
@@ -116,6 +107,8 @@ class SensorReadingAndServerStreaming(QObject):
                 self.UpdateUI()
             if self.myapp.server_streaming_val == True:
                 self.ServerSYNC()
+            else:
+                self.myapp.ui.ServerConnection_Value.setText("Stopped by USER")
         
         # Send back finished signal !
         self.finished.emit()

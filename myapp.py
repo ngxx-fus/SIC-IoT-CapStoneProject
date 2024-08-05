@@ -294,14 +294,18 @@ class MYAPP(QWidget):
 
     """
     Hàm làm mới ngay lập tức giá trị của cảm biến.
+    Có khả năng gây CRASHED vì sử dụng chung BUS.
     """
     def _RefreshButtonAction(self):
-        self.ui.temp_value.setText(str(GetTemperature()) + " oC")
-        self.sensor_read_val = ~ self.sensor_read_val
-        if self.sensor_read_val == True:
-            self._SensorReading()
-        else:
-            self.thread0.exit()
+        """
+            This function has been modified after merged two classes 
+            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+            to prevent 'CRASHED' from simultaneously using GPIO BUS.
+        """
+        Data = SensorReadingAndServerStreaming.GetDataSensor()
+        self.ui.temp_value.setText(ValueFormat(Data[0], suffix=" oC"))
+        self.sensor_read_val = self._not(self.sensor_read_val)
+
 
     """
         Hàm thực hiện công việc đọc giá trị cảm biến ở luồng khác.

@@ -97,8 +97,8 @@ class SensorReadingAndServerStreaming(QObject):
     def isFlaming(self):
         if self.Flame > 0:
             if self.Temp > 40.0:
-                return True
                 if self.CO2 > 50:
+                    return True
                     if self.Humid < 30:
                         if PredictFlaming() > 80:
                             return True

@@ -99,14 +99,16 @@ class MYAPP(QWidget):
         FullSceenButtonAction(self)
 
     """
-
+    Hàm đão giá trị của biến trạng thái self.auto_start_fire_alert.
+    Biến self.auto_start_fire_alert quyết định xem hệ thống có tự động kích hoạt cảnh báo hay không.
     """
     def _SetAutoStartFireAlert(self):
         self.auto_start_fire_alert = self._not(self.auto_start_fire_alert)
         self._SetNotification(2, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
 
     """
-
+    Hàm đão giá trị của biến trạng thái self.auto_stop_fire_alert.
+    Biến self.auto_stop_fire_alert quyết định xem hệ thống có tự động bất hoạt cảnh báo hay không.
     """
     def _SetAutoStopFireAlert(self):
         self.auto_stop_fire_alert = self._not(self.auto_stop_fire_alert)

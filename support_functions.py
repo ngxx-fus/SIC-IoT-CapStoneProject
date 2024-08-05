@@ -1,6 +1,7 @@
 import numpy
 import time
 import subprocess
+import RPi.GPIO as IO
 from PySide6 import QtGui
 from  PySide6.QtCore import QSize
 from random import randint
@@ -10,26 +11,32 @@ from picamera2 import Picamera2, Preview
 
 class FireWarning(QObject):
     finished = pyqtSignal()
-    def __init__(self, myapp):
+    def __init__(self, myapp, BuzzerPin = 21):
         super().__init__(parent=None)
         self.myapp = myapp
+        self.BuzzerPin = BuzzerPin
+        IO.setmode(IO.BCM)
+        IO.setwarnings(False)
+        IO.setup(self.BuzzerPin, IO.OUT)
 
     def FireWarningAction(self):
         msg = "FireWarning"
         dots = "!"
         while self.myapp.fire_waring_value == True:
+            self.myapp.ui.FireWarningBar.setVisible(True)
             self.myapp.ui.Notification1_Value.setText(msg + dots)
             dots = dots + "!"
             if len(dots) > 3:
                 dots = "!"
-            time.sleep(1)
+            IO.output(self.BuzzerPin, IO.HIGH)
+            time.sleep(0.5)
+            IO.output(self.BuzzerPin, IO.LOW)
+            self.myapp.ui.FireWarningBar.setVisible(False)
+            time.sleep(0.5)
+        self.myapp.ui.FireWarningBar.setVisible(False)
+        IO.cleanup()
         self.finished.emit()
 
-"""
-    TODO: After edit and re-translation f*.ui file, You need add this property again into ui_form.py.
-    $ self.pixmap = QPixmap()
-    Because QPixmap cannot initialize here!
-"""
 class CameraStreaming(QObject):
     finished = pyqtSignal()
     def __init__(self, myapp):
@@ -59,13 +66,12 @@ class ServerStreaming(QObject):
         self.myapp = myapp
 
     def UpdateData(self):
-        msg = "Running demo mode"
-        dots = "."
+        msg = "Sent "
         while self.myapp.server_streaming_val == True:
-            self.myapp.ui.ServerConnection_Value.setText( msg + dots)
-            dots = dots + "."
-            if len(dots) > 3:
-                dots = "."
+            msg1 = str(GetTemperature()) + " oC "
+            msg2 = str(GetHumidity()) + " % "
+            msg3 = "--"
+            self.myapp.ui.ServerConnection_Value.setText( msg + msg1 + msg2 + msg3)
             time.sleep(1)
         self.finished.emit()
 
@@ -79,7 +85,7 @@ class SensorReading(QObject):
         while self.myapp.sensor_read_val == True:
             self.myapp.ui.temp_value.setText(str(GetTemperature()) + " oC")
             self.myapp.ui.humid_value.setText(str(GetHumidity()) + " %")
-            self.myapp.ui.CO2_value.setText(str(GetCO2()) + " %")
+            self.myapp.ui.CO2_value.setText("--")
             time.sleep(1)
         self.finished.emit()
 
@@ -92,15 +98,14 @@ def FullSceenButtonAction(MYAPP):
         MYAPP.showNormal()
 
 def RebootButtonAction(myapp):
-    msg = "Reboot after "
     sec = 10
     while sec > 0:
-        myapp._SetNotification(code=2,msg=msg + str(sec) + "s")
         sec = sec - 1
         time.sleep(1)
     subprocess.Popen("sh reboot.sh", shell=True)
 
 def GetTemperature():
+    time.sleep(1)
     return randint(17, 50)
 
 def GetHumidity():

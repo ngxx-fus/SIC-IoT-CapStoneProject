@@ -26,7 +26,7 @@ class Ui_MYAPP(object):
         self.SAMSUNGLOGO = QLabel(MYAPP)
         self.SAMSUNGLOGO.setObjectName(u"SAMSUNGLOGO")
         self.SAMSUNGLOGO.setGeometry(QRect(0, 0, 161, 41))
-        self.SAMSUNGLOGO.setPixmap(QPixmap(u"../Desktop/SIC.IoT-ScaptoneProject/Qt/images/SAMSUNG_LOGO_w128.png"))
+        self.SAMSUNGLOGO.setPixmap(QPixmap(u"SAMSUNG_LOGO_w128.png"))
         self.SIC_LOGO = QLabel(MYAPP)
         self.SIC_LOGO.setObjectName(u"SIC_LOGO")
         self.SIC_LOGO.setGeometry(QRect(10, 30, 151, 16))
@@ -35,7 +35,7 @@ class Ui_MYAPP(object):
         self.SIC_LOGO.setFont(font)
         self.groupBox = QGroupBox(MYAPP)
         self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setGeometry(QRect(10, 50, 681, 31))
+        self.groupBox.setGeometry(QRect(10, 50, 721, 31))
         self.project_name = QLabel(self.groupBox)
         self.project_name.setObjectName(u"project_name")
         self.project_name.setGeometry(QRect(10, 0, 631, 31))
@@ -129,6 +129,10 @@ class Ui_MYAPP(object):
         self.ClearNotiButton = QPushButton(self.sysconf)
         self.ClearNotiButton.setObjectName(u"ClearNotiButton")
         self.ClearNotiButton.setGeometry(QRect(20, 60, 141, 22))
+        self.FireWarningBar = QLabel(MYAPP)
+        self.FireWarningBar.setObjectName(u"FireWarningBar")
+        self.FireWarningBar.setGeometry(QRect(180, 10, 551, 31))
+        self.FireWarningBar.setPixmap(QPixmap(u"red.jpg"))
 
         self.retranslateUi(MYAPP)
 
@@ -164,5 +168,6 @@ class Ui_MYAPP(object):
         self.ServerSyncButton.setText(QCoreApplication.translate("MYAPP", u"ServerSync", None))
         self.SetResetFireAlert_Button.setText(QCoreApplication.translate("MYAPP", u"Set/Reset FireAlert", None))
         self.ClearNotiButton.setText(QCoreApplication.translate("MYAPP", u"Clear Notification", None))
+        self.FireWarningBar.setText("")
     # retranslateUi
 

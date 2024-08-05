@@ -22,7 +22,6 @@ from PySide6.QtWidgets import (QApplication, QCalendarWidget, QGroupBox, QLabel,
 
 from ui_form import Ui_MYAPP
 
-
 # Important:
 # You need to run the following command to generate the ui_form.py file
 #     pyside6-uic form.ui -o ui_form.py, or
@@ -49,20 +48,33 @@ class MYAPP(QWidget):
         self._ServerStreaming()
         # button connect
         self.ui.FullScreenButton.clicked.connect(self._FullSceenButtonAction)
-        self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
         self.ui.RefreshButton.clicked.connect(self._RefreshButtonAction)
         self.ui.Camera_Control.clicked.connect(self._StartStopCameraButtonAction)
         self.ui.People_Detection.clicked.connect(self._StartStopPeopleDetection)
         self.ui.ServerSyncButton.clicked.connect(self._StartStopServerSync)
         self.ui.ClearNotiButton.clicked.connect(self._ClearAllNotification)
         self.ui.SetResetFireAlert_Button.clicked.connect(self._SetResetFireWaring)
+        self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
+        self.ui.FireWarningBar.setVisible(False)
+
+    def _not(self, var):
+        if var == True:
+            var = False
+        else:
+            var = True
+        return var
 
     def _FullSceenButtonAction(self):
         FullSceenButtonAction(self)
 
     def _RebootButtonAction(self):
-        RebootButtonAction(self)
+        self.ui.Notification2_Value.setText("Reboot after 10s - CANNOT CANCEL!")
+        RebootButtonAction()
+
     def _ClearAllNotification(self):
+        if self.fire_waring_value == False:
+            self.fire_waring_clicked_count = 0
+            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
         self.ui.Notification1_Value.setText("<Notification 1>")
         self.ui.Notification2_Value.setText("<Notification 2>")
     """
@@ -71,7 +83,11 @@ class MYAPP(QWidget):
         + 10B:  Notification 2
         + 11B:  Notification 1 & 2
     """
+
     def _ClearNotification(self, code = 3):
+        if self.fire_waring_value == False:
+            self.fire_waring_clicked_count = 0
+            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
         if code & 1 != 0:
             self.ui.Notification1_Value.setText("<Notification 1>")
         if code & 2 != 0:
@@ -85,11 +101,13 @@ class MYAPP(QWidget):
     msg  - The message:
         + The message must less than 20 characters!
     """
+
     def _SetNotification(self, code = 1, msg = ""):
         if code & 1 != 0:
             self.ui.Notification1_Value.setText(msg)
         if code & 2 != 0:
             self.ui.Notification2_Value.setText(msg)
+
     def _StartStopCameraButtonAction(self):
         if self.camera_streaming_val == True:
             self.thread1.exit()
@@ -101,6 +119,7 @@ class MYAPP(QWidget):
             self.picam2.start()
             time.sleep(2) # warn-up time
             self._CameraStreaming()
+
     def _StartStopPeopleDetection(self):
         if self.people_detection_val == True:
             self.people_detection_val= False
@@ -109,8 +128,10 @@ class MYAPP(QWidget):
 
         if self.people_detection_val == True:
             self._PeopleDetection()
+
     def _PeopleDetection(self):
         PeopleDetection(self)
+
     def _CameraStreaming(self):
         self.thread1 = QThread()
         self.CameraStreaming = CameraStreaming(self)
@@ -120,6 +141,7 @@ class MYAPP(QWidget):
         self.CameraStreaming.finished.connect(self.CameraStreaming.deleteLater)
         self.thread1.finished.connect(self.thread1.deleteLater)
         self.thread1.start()
+
     def _StartStopServerSync(self):
         if self.server_streaming_val == True:
             self.thread2.exit()
@@ -130,6 +152,7 @@ class MYAPP(QWidget):
             self.ui.ServerConnection_Value.setText("Connected")
         else:
             self.ui.ServerConnection_Value.setText("Disconnected")
+
     def _ServerStreaming(self):
         self.ui.ServerConnection_Value.setText("Connected")
         self.thread2 = QThread()
@@ -140,35 +163,30 @@ class MYAPP(QWidget):
         self.ServerStreaming.finished.connect(self.ServerStreaming.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.thread2.start()
+
+    def _SetFireWarningButtonTitle(self, count = 0):
+        # "count = 0" means no countdown.
+        if count == 0 :
+            self.ui.SetResetFireAlert_Button.setText("Set/Reset FireAlert");
+        else:
+            # "count > 0" meaning the button has been pressed count times.
+            self.ui.SetResetFireAlert_Button.setText("Set/Reset FireAlert({})".format(count))
+
     def _SetResetFireWaring(self):
         self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
         if self.fire_waring_clicked_count < 10:
-            self.ui.SetResetFireAlert_Button.setText("Set/Reset FireAlert(" + str(self.fire_waring_clicked_count) + ")")
+            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
             return
-
         self.fire_waring_clicked_count = 0
-        self.ui.SetResetFireAlert_Button.setText("Set/Reset FireAlert")
+        self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
 
         if self.fire_waring_value == True:
             self.thread3.exit()
             self._ClearNotification(code=1)
-
+        self.fire_waring_value = self._not(self.fire_waring_value)
         if self.fire_waring_value == True:
-            self.fire_waring_value = False
-        else:
-            self.fire_waring_value = True
-
-        if self.fire_waring_value == True:
-            # stopped ML bcz resource of the host
-            # if self.people_detection_val == True:
-            #     self._StartStopPeopleDetection()
-            # stopped sensor reading bcz resource of the host
-            # if self.sensor_read_val == True:
-            #     self._RefreshButtonAction()
-            # set color background
-            #self.setStyleSheet('background-color: red;')
-            # fire warning
             self._FireWaring()
+
     def _FireWaring(self):
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)
@@ -178,6 +196,7 @@ class MYAPP(QWidget):
         self.FireWarning.finished.connect(self.FireWarning.deleteLater)
         self.thread3.finished.connect(self.thread3.deleteLater)
         self.thread3.start()
+
     def _RefreshButtonAction(self):
         self.ui.temp_value.setText(str(GetTemperature()) + " oC")
         self.sensor_read_val = ~ self.sensor_read_val
@@ -185,6 +204,7 @@ class MYAPP(QWidget):
             self._SensorReading()
         else:
             self.thread0.exit()
+
     def _SensorReading(self):
         self.thread0 = QThread()
         self.SensorReading = SensorReading(self)
@@ -194,6 +214,9 @@ class MYAPP(QWidget):
         self.SensorReading.finished.connect(self.SensorReading.deleteLater)
         self.thread0.finished.connect(self.thread0.deleteLater)
         self.thread0.start()
+
+    def __del__():
+        IO.cleanup()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

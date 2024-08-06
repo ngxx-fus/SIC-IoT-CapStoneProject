@@ -95,13 +95,13 @@ class SensorReadingAndServerStreaming(QObject):
     The conclusion of whether there is a fire or not is based on the values ​​obtained from the sensors and predictions from machine learning.
     """
     def isFlaming(self):
-        if self.Flame > 1:
-            if self.Temp > 45.0:
-                if self.CO2 > 1:
+        if self.Flame == 0:
+            if self.Temp < 45.0:
+                if self.CO2 == 0:
                     return True
                     if self.Humid < 30:
 
-        return True
+        return False
 
     """
     Auto set FireAlert based on isFlaming()

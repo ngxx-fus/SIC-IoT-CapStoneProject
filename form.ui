@@ -96,7 +96,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>20</y>
       <width>301</width>
       <height>161</height>
      </rect>
@@ -415,7 +415,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Auto Start Fire Alert</string>
+     <string>Auto Set Fire Alert</string>
     </property>
    </widget>
    <widget class="QPushButton" name="AutoStopFireAlert">
@@ -428,7 +428,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Auto Stop Fire Alert</string>
+     <string>Auto Reset Fire Alert</string>
     </property>
    </widget>
    <widget class="QPushButton" name="ServerSyncButton">
@@ -436,7 +436,7 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>141</width>
+      <width>101</width>
       <height>22</height>
      </rect>
     </property>
@@ -447,14 +447,27 @@
    <widget class="QPushButton" name="RebootButton">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>130</x>
       <y>20</y>
-      <width>151</width>
+      <width>101</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>Reboot</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="LightButton">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>20</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Light</string>
     </property>
    </widget>
   </widget>

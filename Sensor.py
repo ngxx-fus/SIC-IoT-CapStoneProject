@@ -30,7 +30,7 @@ def GetHumidity():
     """
     print("Called: Sensor.GetHumidity")
     # print(msg)
-    return randint(00, 100)
+    return randint(60, 100)
 
 def GetCO2():
     msg = """
@@ -39,7 +39,7 @@ def GetCO2():
     """
     print("Called: Sensor.GetCO2")
     # print(msg)
-    return randint(00, 100)
+    return randint(00, 100)/100
 
 def GetFlame():
     msg = """
@@ -48,4 +48,4 @@ def GetFlame():
     """
     print("Called: Sensor.GetFlame")
     # print(msg)
-    return randint(0, 1)
+    return randint(00, 100)/100

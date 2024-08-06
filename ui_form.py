@@ -26,7 +26,7 @@ class Ui_MYAPP(object):
         self.SAMSUNGLOGO = QLabel(MYAPP)
         self.SAMSUNGLOGO.setObjectName(u"SAMSUNGLOGO")
         self.SAMSUNGLOGO.setGeometry(QRect(0, 0, 161, 41))
-        self.SAMSUNGLOGO.setPixmap(QPixmap(u"SAMSUNG_LOGO_w128.png"))
+        self.SAMSUNGLOGO.setPixmap(QPixmap(u"Imgs/SAMSUNG_LOGO_w128.png"))
         self.SIC_LOGO = QLabel(MYAPP)
         self.SIC_LOGO.setObjectName(u"SIC_LOGO")
         self.SIC_LOGO.setGeometry(QRect(10, 30, 151, 16))
@@ -141,7 +141,7 @@ class Ui_MYAPP(object):
         self.FireWarningBar = QLabel(MYAPP)
         self.FireWarningBar.setObjectName(u"FireWarningBar")
         self.FireWarningBar.setGeometry(QRect(180, 10, 551, 31))
-        self.FireWarningBar.setPixmap(QPixmap(u"red.jpg"))
+        self.FireWarningBar.setPixmap(QPixmap(u"Imgs/red.jpg"))
 
         self.retranslateUi(MYAPP)
 

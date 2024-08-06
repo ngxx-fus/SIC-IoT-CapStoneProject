@@ -1,5 +1,6 @@
 import numpy
 import time
+import requests
 import subprocess
 import RPi.GPIO as IO
 from random import randint
@@ -15,8 +16,8 @@ from Predict import PredictFlaming
 
 ############################# FUNCTIONS #################################
 """
-Hàm trả về dạng chuỗi của val nếu không âm,ngược lại trả về "--".
-Cho phép chèn thêm tiền tố (prefix) và hậu tố (suffix)
+HĂ m tráº£ vá» dáº¡ng chuá»—i cá»§a val náº¿u khĂ´ng Ă¢m,ngÆ°á»£c láº¡i tráº£ vá» "--".
+Cho phĂ©p chĂ¨n thĂªm tiá»n tá»‘ (prefix) vĂ  háº­u tá»‘ (suffix)
 """
 def ValueFormat(val, prefix = '', suffix = ''):
     if val >= 0:
@@ -44,6 +45,22 @@ def PeopleDetection(myapp):
     myapp._SetNotification(code=2,msg="PeopleDetection: No longer service!")
     return
 
+"""
+This function to check the Internet connection.
+Parameters:
+    NONE
+Return value:
+    True  : if device have connection to Internet
+    False : otherwise
+"""
+def InternetConnectionCheck():
+    try:
+        requests.head("http://www.google.com/", timeout=1)
+        # Do something
+        return True
+    except requests.ConnectionError:
+        # Do something
+        return False
 ############################# CLASSES #################################
 
 """
@@ -59,6 +76,7 @@ class SensorReadingAndServerStreaming(QObject):
         self.Humid = 0.0
         self.CO2 = 0.0
         self.Flame = 0.0
+        self.Smoke = 0.0
 
     """
     Update self.Temp, self.Humid, self.CO2, self.Flame.
@@ -72,37 +90,38 @@ class SensorReadingAndServerStreaming(QObject):
         return (self.Temp, self.Humid, self.CO2, self.Flame)
 
     """
+    The conclusion of whether there is a fire or not is based on the values â€‹â€‹obtained from the sensors and predictions from machine learning.
+    TODO: rewrite condition
+    """
+    def isFlaming(self):
+        if self.Flame == 0:
+            if self.Temp < 45.0:
+                if self.CO2 == 0:
+                    return True
+        return False
+
+    """
     Update data onto UI.
     """
     def UpdateUI(self):
         self.myapp.ui.temp_value.setText(ValueFormat(self.Temp, suffix=" oC"))
         self.myapp.ui.humid_value.setText(ValueFormat(self.Humid, suffix=" %"))
-        self.myapp.ui.CO2_value.setText(ValueFormat(self.CO2, suffix=" %"))
+        self.myapp.ui.CO2_value.setText(ValueFormat(self.CO2, suffix=""))
 
     """
     Server sync.
     """
     def ServerSYNC(self):
-        msg = "OK! Sent:"
-        msg1 = ValueFormat(self.Temp, "T", "oC, ")
-        msg2 = ValueFormat(self.Humid, "H", "%, ")
-        msg3 = ValueFormat(self.CO2, "C", "%, ")
-        msg4 = ValueFormat(self.Flame, "F")
-        self.myapp.ui.ServerConnection_Value.setText(msg+msg1+msg2+msg3+msg4)
-        ServerSYNC()
-
-    """
-    The conclusion of whether there is a fire or not is based on the values ​​obtained from the sensors and predictions from machine learning.
-    """
-    def isFlaming(self):
-        if self.Flame > 0:
-            if self.Temp > 40.0:
-                if self.CO2 > 50:
-                    return True
-                    if self.Humid < 30:
-                        if PredictFlaming() > 80:
-                            return True
-        return False
+        self.myapp.ui.ServerConnection_Value.setText("Updating data...")
+        Sending_Smoke = 'OFF'
+        if self.CO2 > 0.0:
+            Sending_Smoke = 'ON'
+        FireSet, LightSet = ServerSYNC(Temp=self.Temp, Humid=self.Humid, Smoke=Sending_Smoke)
+        if (FireSet == 'ON') and (self.myapp.fire_waring_value == False):
+            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
+        elif ((FireSet == 'OFF')) and (self.myapp.fire_waring_value == True):
+            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
+        self.myapp.ui.ServerConnection_Value.setText("Done!")
 
     """
     Auto set FireAlert based on isFlaming()
@@ -111,8 +130,12 @@ class SensorReadingAndServerStreaming(QObject):
         if self.isFlaming() == True:
             if self.myapp.fire_waring_value == False and self.myapp.auto_start_fire_alert == True:
                 self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
+                if self.myapp.server_streaming_val == True:
+                    ServerSYNC(Fire='ON')
         elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
+            if self.myapp.server_streaming_val == True:
+                ServerSYNC(Fire='OFF')
 
     """
     Work based on data from sensor.
@@ -124,15 +147,20 @@ class SensorReadingAndServerStreaming(QObject):
             self.GetDataSensor()
             time.sleep(1)
             # processing
+            self.AutoSetFireAlert()
+
             if self.myapp.sensor_read_val == True:
                 self.UpdateUI()
 
             if self.myapp.server_streaming_val == True:
-                self.ServerSYNC()
+                if InternetConnectionCheck() == False:
+                    self.myapp._SetNotification(2, "Internet lost!")
+                    self.myapp._StartStopServerSync()
+                else:
+                    self.ServerSYNC()
             else:
-                self.myapp.ui.ServerConnection_Value.setText("Stopped by USER")
+                self.myapp.ui.ServerConnection_Value.setText("Stopped by USER!")
 
-            self.AutoSetFireAlert()
         # Send back finished signal !
         self.finished.emit()
 
@@ -151,11 +179,19 @@ class FireWarning(QObject):
         IO.setup(self.BuzzerPin, IO.OUT)
 
     def FireWarningAction(self):
+        # if self.myapp.server_streaming_val == False:
+            # self.myapp._StartStopServerSync()
+            # self.myapp._SetNotification(code=2, msg="Auto turn-on server SYNC!")
         self.myapp.ui.RebootButton.setEnabled(False)
         self.myapp.ui.Camera_Control.setEnabled(False)
         self.myapp.ui.ServerSyncButton.setEnabled(False)
+        self.myapp.ui.FireWarningBar.setVisible(True)
         msg = "FireWarning"
         dots = "!"
+        if self.myapp.server_streaming_val == True:
+            FireSet, LightSet = ServerSYNC(Fire='ON') #'Fire' meaning FireState (Detected or Not)
+            if FireSet == 'OFF':
+                ServerSYNC(Fan='ON')
         while self.myapp.fire_waring_value == True:
             self.myapp.ui.FireWarningBar.setVisible(True)
             self.myapp.ui.Notification1_Value.setText(msg + dots)
@@ -167,8 +203,11 @@ class FireWarning(QObject):
             IO.output(self.BuzzerPin, IO.LOW)
             self.myapp.ui.FireWarningBar.setVisible(False)
             time.sleep(0.5)
+        if self.myapp.server_streaming_val == True:
+            FireSet, LightSet = ServerSYNC(Fire='OFF') #'Fire' meaning FireState (Detected or Not)
+            if FireSet == 'ON':
+                ServerSYNC(Fan='OFF')
         self.myapp.ui.FireWarningBar.setVisible(False)
-        #IO.cleanup()
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)
         self.myapp.ui.ServerSyncButton.setEnabled(True)
@@ -184,8 +223,8 @@ class CameraStreaming(QObject):
 
     def UpdateData(self):
         while self.myapp.camera_streaming_val == True:
-            self.myapp.picam2.capture_file("img.jpg")
-            self.myapp.pixmap.load("img.jpg")
+            self.myapp.picam2.capture_file("./Imgs/img.jpg")
+            self.myapp.pixmap.load("./Imgs/img.jpg")
             self.myapp.ui.Camera_Label.setPixmap(self.myapp.pixmap.scaled(QSize(301, 201)))
             time.sleep(0.041666)
         self.myapp.picam2.stop()
@@ -195,7 +234,7 @@ class CameraStreaming(QObject):
 Worker class: ServerStreaming
 NOTE:
     This class has been deleted after merged two classes
-    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
     to prevent 'CRASHED' from simultaneously using GPIO BUS.
 """
 # class ServerStreaming(QObject):
@@ -218,7 +257,7 @@ NOTE:
 Worker class: SensorReading
 NOTE:
     This class has been deleted after merged two classes
-    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
     to prevent 'CRASHED' from simultaneously using GPIO BUS.
 """
 # class SensorReading(QObject):
@@ -234,4 +273,3 @@ NOTE:
 #             self.myapp.ui.CO2_value.setText("--")
 #             time.sleep(1)
 #         self.finished.emit()
-

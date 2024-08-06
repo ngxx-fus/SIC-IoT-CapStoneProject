@@ -43,4 +43,4 @@ def ServerSYNC(Temp = None, Humid = None, Smoke = None, Fire = None, Fan = None,
             db.reference('LivingRoom/fan').get(False)]
 
 if __name__ == "__main__":
-    print(ServerSYNC(1, 1, 'OFF', 'OFF', 'OFF', 'OFF'))
+    print(ServerSYNC(Fire='ON'))

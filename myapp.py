@@ -35,7 +35,7 @@ class MYAPP(QWidget):
     + Khởi tạo một đối tượng hiển thị Ui_MYAPP() bao gồm các phần tử được định nghĩa trong Ui_MYYAPP
     + Khởi tạo các biến trạng thái fullscreen_val, sensor_read_val
     + Khởi tạo picam2 là camera từ libcamera2, bật picam2.
-    + Khởi tạo QPixmap để đọc ảnh dưới dạng QPixmap và hiển thị trên các đối tượng QLabel. 
+    + Khởi tạo QPixmap để đọc ảnh dưới dạng QPixmap và hiển thị trên các đối tượng QLabel.
     + Khởi tạo biến trạng thái camera_streaming_val, server_streaming_val, people_detection_val, self.auto_stop_fire_alert và biến đếm số lần nhấn nút FireWarning fire_waring_clicked_count
     + Khởi chạy các chương trình con chạy song song.
     + Kết nối các các hàm tới các nút nhấn.
@@ -59,7 +59,7 @@ class MYAPP(QWidget):
         self.people_detection_val = False
         self.fire_waring_value = False
         self.auto_start_fire_alert = True
-        self.auto_stop_fire_alert = False 
+        self.auto_stop_fire_alert = False
         self.fire_waring_clicked_count = 0
         self._CameraStreaming()
         # self._SensorReading()
@@ -77,8 +77,8 @@ class MYAPP(QWidget):
         self.ui.AutoStartFireAlert.clicked.connect(self._SetAutoStartFireAlert)
         self.ui.AutoStopFireAlert.clicked.connect(self._SetAutoStopFireAlert)
         self.ui.FireWarningBar.setVisible(False)
-        self._SetNotification(1, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
-        self._SetNotification(2, "Auto STOP Fire Alert: {}".format(self.auto_stop_fire_alert))
+        # self._SetNotification(1, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
+        # self._SetNotification(2, "Auto STOP Fire Alert: {}".format(self.auto_stop_fire_alert))
         # logger
         #TODO: create logger
 
@@ -94,7 +94,7 @@ class MYAPP(QWidget):
         return -1
 
     """
-    Hàm thay đổi chế độ hiển thị FullScreen/Maximized 
+    Hàm thay đổi chế độ hiển thị FullScreen/Maximized
     """
     def _FullSceenButtonAction(self):
         FullSceenButtonAction(self)
@@ -244,8 +244,8 @@ class MYAPP(QWidget):
     """
     def _ServerStreaming(self):
         msg = """
-            This function has been deleted after merged two classes 
-            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+            This function has been deleted after merged two classes
+            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
             to prevent 'CRASHED' from simultaneously using GPIO BUS.
         """
         print("Called: _ServerStreaming()")
@@ -277,7 +277,7 @@ class MYAPP(QWidget):
     """
     Hàm bật tắt cảnh báo cháy thủ công.
     1.  Kiểm tra fire_waring_clicked_count - số lần nhấn nút đã đủ chưa, nếu chưa đủ chỉ cập nhật số lần nhấn.
-    2.  Nếu đủ số lần nhấn nút, kiểm tra biến trạng thái báo cháy self.fire_waring_value 
+    2.  Nếu đủ số lần nhấn nút, kiểm tra biến trạng thái báo cháy self.fire_waring_value
             Nếu biến cảnh báo có giá trị True:
                 Thay đổi trạng thái cảnh báo, xoá thông báo báo cháy.
             Ngược lại:
@@ -298,15 +298,15 @@ class MYAPP(QWidget):
                 self._ClearNotification(code=1)
             else:
                 return #1
-        
+
         # Normal mode
-        self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
         if self.fire_waring_clicked_count < 10:
+            self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
             self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
             return
         self.fire_waring_clicked_count = 0
         self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
-        
+
         if self.fire_waring_value == True:
             self.thread3.exit()
             self._ClearNotification(code=1)
@@ -333,8 +333,8 @@ class MYAPP(QWidget):
     """
     def _RefreshButtonAction(self):
         """
-            This function has been modified after merged two classes 
-            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+            This function has been modified after merged two classes
+            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
             to prevent 'CRASHED' from simultaneously using GPIO BUS.
         """
         Data = self.SensorReadingAndServerStreaming.GetDataSensor()
@@ -348,8 +348,8 @@ class MYAPP(QWidget):
     """
     def _SensorReading(self):
         msg = """
-            This function has been deleted after merged two classes 
-            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming 
+            This function has been deleted after merged two classes
+            SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
             to prevent 'CRASHED' from simultaneously using GPIO BUS.
         """
         print("Called: _SensorReading()")

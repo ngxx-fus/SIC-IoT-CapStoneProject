@@ -129,8 +129,12 @@ class SensorReadingAndServerStreaming(QObject):
         if self.Flame == 0:
             if self.Temp < 45.0:
                 if self.CO2 == 0:
+        if self.Flame == 0:
+            if self.Temp < 45.0:
+                if self.CO2 == 0:
                     return True
                     if self.Humid < 30:
+
 
         return False
 

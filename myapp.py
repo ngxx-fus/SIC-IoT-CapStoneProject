@@ -55,7 +55,7 @@ class MYAPP(QWidget):
         self.pixmap = QPixmap("./Imgs/img.jpg")
         self.light_vale = False
         self.camera_streaming_val = True
-        self.server_streaming_val = True
+        self.server_streaming_val = False
         self.people_detection_val = False
         self.fire_waring_value = False
         self.auto_start_fire_alert = True
@@ -121,7 +121,7 @@ class MYAPP(QWidget):
     """
     def _RebootButtonAction(self):
         self.ui.Notification2_Value.setText("Reboot after 10s - CANNOT CANCEL!")
-        RebootButtonAction()
+        RebootButtonAction(self)
 
     """
     Hàm đặt lại <Notification1> và <Notification2>.

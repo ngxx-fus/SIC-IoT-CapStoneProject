@@ -116,10 +116,11 @@ class SensorReadingAndServerStreaming(QObject):
         Sending_Smoke = 'OFF'
         if self.CO2 > 0.0:
             Sending_Smoke = 'ON'
-        FireSet, LightSet = ServerSYNC(Temp=self.Temp, Humid=self.Humid, Smoke=Sending_Smoke)
-        if (FireSet == 'ON') and (self.myapp.fire_waring_value == False):
+        FireSwtich, LightSet = ServerSYNC(Temp=self.Temp, Humid=self.Humid, Smoke=Sending_Smoke, MYAPP=self.myapp)
+        print(FireSwtich, " - ", self.myapp.fire_waring_value)
+        if (FireSwtich == 'ON') and (self.myapp.fire_waring_value == False):
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
-        elif ((FireSet == 'OFF')) and (self.myapp.fire_waring_value == True):
+        elif ((FireSwtich == 'OFF')) and (self.myapp.fire_waring_value == True):
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
         self.myapp.ui.ServerConnection_Value.setText("Done!")
 
@@ -131,11 +132,11 @@ class SensorReadingAndServerStreaming(QObject):
             if self.myapp.fire_waring_value == False and self.myapp.auto_start_fire_alert == True:
                 self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
                 if self.myapp.server_streaming_val == True:
-                    ServerSYNC(Fire='ON')
+                    ServerSYNC(Fire='ON', MYAPP=self.myapp)
         elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
             if self.myapp.server_streaming_val == True:
-                ServerSYNC(Fire='OFF')
+                ServerSYNC(Fire='OFF', MYAPP=self.myapp)
 
     """
     Work based on data from sensor.
@@ -159,7 +160,7 @@ class SensorReadingAndServerStreaming(QObject):
                 else:
                     self.ServerSYNC()
             else:
-                self.myapp.ui.ServerConnection_Value.setText("Stopped by USER!")
+                self.myapp.ui.ServerConnection_Value.setText("Disconnected!")
 
         # Send back finished signal !
         self.finished.emit()
@@ -189,8 +190,8 @@ class FireWarning(QObject):
         msg = "FireWarning"
         dots = "!"
         if self.myapp.server_streaming_val == True:
-            FireSet, LightSet = ServerSYNC(Fire='ON') #'Fire' meaning FireState (Detected or Not)
-            if FireSet == 'OFF':
+            FireSwtich, LightSet = ServerSYNC(Fire='ON') #'Fire' meaning FireState (Detected or Not)
+            if FireSwtich == 'OFF':
                 ServerSYNC(Fan='ON')
         while self.myapp.fire_waring_value == True:
             self.myapp.ui.FireWarningBar.setVisible(True)
@@ -204,9 +205,9 @@ class FireWarning(QObject):
             self.myapp.ui.FireWarningBar.setVisible(False)
             time.sleep(0.5)
         if self.myapp.server_streaming_val == True:
-            FireSet, LightSet = ServerSYNC(Fire='OFF') #'Fire' meaning FireState (Detected or Not)
-            if FireSet == 'ON':
-                ServerSYNC(Fan='OFF')
+            FireSwtich, LightSet = ServerSYNC(Fire='OFF', MYAPP=self.myapp) #'Fire' meaning FireState (Detected or Not)
+            if FireSwtich == 'ON':
+                ServerSYNC(Fan='OFF', MYAPP=self.myapp)
         self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)

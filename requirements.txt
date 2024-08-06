@@ -1,1 +1,4 @@
 PySide6
+firebase_admin
+picamera2
+PyQt5

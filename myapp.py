@@ -52,7 +52,8 @@ class MYAPP(QWidget):
         # for CameraStreaming
         self.picam2 = Picamera2()
         self.picam2.start()
-        self.pixmap = QPixmap("img.jpg")
+        self.pixmap = QPixmap("./Imgs/img.jpg")
+        self.light_vale = False
         self.camera_streaming_val = True
         self.server_streaming_val = True
         self.people_detection_val = False
@@ -117,7 +118,6 @@ class MYAPP(QWidget):
     """
     Hàm thực hiện chức năng reboot.
     Hoạt động: Đầu tiên set trạng thái của <Notification2> để thông báo sẽ tắt sau 10s - không thể huỷ lệnh này, và sau đó đếm ngược.
-    TODO: Chức năng hiển thị đang lỗi.
     """
     def _RebootButtonAction(self):
         self.ui.Notification2_Value.setText("Reboot after 10s - CANNOT CANCEL!")

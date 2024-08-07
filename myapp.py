@@ -73,7 +73,7 @@ class MYAPP(QWidget):
         self.ui.People_Detection.clicked.connect(self._StartStopPeopleDetection)
         self.ui.ServerSyncButton.clicked.connect(self._StartStopServerSync)
         self.ui.ClearNotiButton.clicked.connect(self._ClearAllNotification)
-        self.ui.SetResetFireAlert_Button.clicked.connect(self._SetResetFireWaring)
+        self.ui.SetResetFireAlert_Button.clicked.connect(self._FireWaringButtonAction)
         self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
         self.ui.AutoStartFireAlert.clicked.connect(self._SetAutoStartFireAlert)
         self.ui.AutoStopFireAlert.clicked.connect(self._SetAutoStopFireAlert)
@@ -282,6 +282,18 @@ class MYAPP(QWidget):
             self.ui.SetResetFireAlert_Button.setText("Set/Reset FireAlert({})".format(count))
 
     """
+
+    """
+    def _FireWaringButtonAction(self):
+        if self.fire_waring_clicked_count < 10:
+            self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
+            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
+            return
+        self.fire_waring_clicked_count = 0
+        self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
+        self._SetResetFireWaring()
+
+    """
     Hàm bật tắt cảnh báo cháy thủ công.
     1.  Kiểm tra fire_waring_clicked_count - số lần nhấn nút đã đủ chưa, nếu chưa đủ chỉ cập nhật số lần nhấn.
     2.  Nếu đủ số lần nhấn nút, kiểm tra biến trạng thái báo cháy self.fire_waring_value
@@ -309,13 +321,6 @@ class MYAPP(QWidget):
                 return #1
 
         # Normal mode
-        if self.fire_waring_clicked_count < 10:
-            self.fire_waring_clicked_count = self.fire_waring_clicked_count + 1
-            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
-            return
-        self.fire_waring_clicked_count = 0
-        self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
-
         if self.fire_waring_value == True:
             self.thread3.exit()
             self._ClearNotification(code=1)

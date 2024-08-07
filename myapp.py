@@ -302,33 +302,23 @@ class MYAPP(QWidget):
             print("""[INFO] MYAPP._SetResetFireWaring: Running priority mode...""")
             if priority_setter == True:
                 print("[INFO] MYAPP._SetResetFireWaring: Set")
-                if hasattr(self, "thread3") == True:
-                    if self.thread3.isRunning() == True:
-                        print("[INFO] MYAPP._SetResetFireWaring: Has been set -> Abort!")
-                    else:
-                        self.thread3.start()
-                else:
-                    self.fire_waring_value = True
-                    self._FireWaring()
+                self.fire_waring_value = True
+                self._FireWaring()
                 return
             elif priority_setter == False:
                 print("[INFO] MYAPP._SetResetFireWaring: Reset")
-                if hasattr(self, "thread3") == False:
-                    print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
-                else:
+                if hasattr(self, "thread3") == True:
                     self.thread3.exit()
                     self.fire_waring_value = False
                     self._ClearNotification(code=1)
-                return
+                    return
             else:
                 print("[INFO] MYAPP._SetResetFireWaring: Change to normal mode.")
 
         # Normal mode
         print("""[INFO] MYAPP._SetResetFireWaring: Running normal mode...""")
         if self.fire_waring_value == True:
-            if hasattr(self, "thread3") == False:
-                print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
-            else:
+            if hasattr(self, "thread3") == True:
                 print("[INFO] MYAPP._SetResetFireWaring: Reset")
                 self.thread3.exit()
                 self._ClearNotification(code=1)
@@ -337,22 +327,20 @@ class MYAPP(QWidget):
         
         if self.fire_waring_value == True:
             print("[INFO] MYAPP._SetResetFireWaring: Set")
-            if hasattr(self, "thread3") == True:
-                print("[INFO] MYAPP._SetResetFireWaring: Has been set -> Abort!")
-            else:
-                self.fire_waring_value = True
-                self._FireWaring()
+            self.fire_waring_value = True
+            self._FireWaring()
 
     """
     Hàm thực hiện công việc cảnh báo cháy ở luồng khác.
     """
     def _FireWaring(self):
-        print("[INFO] MYAPP._FireWaring: Created thread3!")
+        print("[INFO] MYAPP._FireWaring: Creating thread3!")
         if hasattr(self, "thread3") == True:
             if self.thread3.isRunning() == False():
+                print("[INFO] MYAPP._FireWaring: thread3 exist -> restart!")
                 self.thread3.exec()
             else:
-                print("[INFO] MYAPP._FireWaring: thread3 has been created -> Abort")
+                print("[INFO] MYAPP._FireWaring: thread3 exist -> Abort!")
             return
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)

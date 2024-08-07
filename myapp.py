@@ -345,6 +345,7 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc cảnh báo cháy ở luồng khác.
     """
     def _FireWaring(self):
+        print("[INFO] MYAPP._FireWaring: Created thread3!")
         if hasattr(self, "thread3") == True:
             print("[INFO] MYAPP._FireWaring: thread3 has been created -> Abort")
             return

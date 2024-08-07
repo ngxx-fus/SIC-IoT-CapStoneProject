@@ -314,8 +314,7 @@ class MYAPP(QWidget):
             elif priority_setter == False:
                 print("[INFO] MYAPP._SetResetFireWaring: Reset")
                 if hasattr(self, "thread3") == False:
-                    if self.thread3.isRunning() == False:
-                        print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
+                    print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
                 else:
                     self.thread3.exit()
                     self.fire_waring_value = False

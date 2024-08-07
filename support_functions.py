@@ -145,7 +145,8 @@ class SensorReadingAndServerStreaming(QObject):
     """
     def AutoSetFireAlert(self):
         FireState_Auto = False
-        FireState_Switch = self._xnor( self.myapp.fire_waring_value, self.FireSwitch )
+        FireState_Switch_Web = self._xnor( self.myapp.fire_waring_value, self.FireSwitch )
+        FireState_Switch_Local = self.myapp.fire_switch_value
         # Detected flaming
         if self.isFlaming() == True:
             # Not set alarm and Allow auto set fire alarm
@@ -154,10 +155,11 @@ class SensorReadingAndServerStreaming(QObject):
         # Not detected flaming; Has set fire alarm and Allow auto reset fire alarm
         elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
             FireState_Auto = False
-        FinalFireState = FireState_Auto or FireState_Switch
+        FinalFireState = FireState_Auto or FireState_Switch or FireState_Switch_Local
         if FinalFireState != self.myapp.fire_waring_value:
+            self.myapp.fire_waring_value = FinalFireState
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)
-        time.sleep(1)
+        # time.sleep(1)
 
     """
     Work based on data from sensor.
@@ -212,8 +214,9 @@ class FireWarning(QObject):
             dots = dots + "!"
             if len(dots) > 3:
                 dots = ""
-            Exec.BuzzerSquaredPulse(1)
+            Exec.BuzzerSquaredPulse(0.25)
             self.myapp.ui.FireWarningBar.setVisible(False)
+            Exec.BuzzerSquaredPulse(0.25)
         self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)

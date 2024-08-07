@@ -14,12 +14,12 @@ firebase_admin.initialize_app(cred, {
 """
 This function get/set value on Firebase.
 Parameters:
-+   Temp    (Type: float)
-+   Himid   (Type: float)
-+   Fan     (Type: str)     'ON'/'OFF'
-+   Light   (Type: str)     'ON'/'OFF'
-+   Smoke   (Type: str)     'ON'/'OFF'
-+   Fire    (Type: str)     'ON'/'OFF'
++   Temp            (Type: float)
++   Himid           (Type: float)
++   FireSwitch      (Type: str)     'ON'/'OFF'
++   LightSwitch     (Type: str)     'ON'/'OFF'
++   GAS             (Type: str)     'ON'/'OFF'
++   Fire            (Type: str)     'ON'/'OFF'
 Return value:
 +   Return list includes two elements, the first is state of FAN, the order is state of LIGHT which is "ON" or "OFF".
 NOTE:
@@ -32,8 +32,8 @@ def ServerSYNCStatus(MYAPP = None, msg = "", ConsoleLog = False):
     if ConsoleLog == True:
         print("ServerSNYC: ", msg)
 
-def ServerSYNC(Temp = None, Humid = None, Smoke = None, Fire = None, Fan = None, 
-                    Light = None, GET = False, MYAPP = None, ConsoleLog = False):
+def ServerSYNC( Temp = None, Humid = None, GAS = None, Fire = None, FireSwitch = None,
+                LightSwitch = None, GET = False, MYAPP = None, ConsoleLog = False):
     if Temp is not None:
         ServerSYNCStatus(MYAPP, "Updating Temp...", ConsoleLog)
         db.reference('LivingRoom/nhietdo').set(Temp)
@@ -42,27 +42,27 @@ def ServerSYNC(Temp = None, Humid = None, Smoke = None, Fire = None, Fan = None,
         ServerSYNCStatus(MYAPP, "Updating Himid...", ConsoleLog)
         db.reference('LivingRoom/doamkk').set(Humid)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-    if Smoke is not None:
-        ServerSYNCStatus(MYAPP, "Updating Smoke...", ConsoleLog)
-        db.reference('LivingRoom/smoke').set(Smoke)
+    if GAS is not None:
+        ServerSYNCStatus(MYAPP, "Updating GAS...", ConsoleLog)
+        db.reference('LivingRoom/smoke').set(GAS)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if Fire is not None:
         ServerSYNCStatus(MYAPP, "Updating Fire St...", ConsoleLog)
         db.reference('LivingRoom/fire').set(Fire)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-    if Fan is not None:
+    if FireSwitch is not None:
         ServerSYNCStatus(MYAPP, "Updating Fire Sw...", ConsoleLog)
-        db.reference('LivingRoom/fan').set(Fan)
+        db.reference('LivingRoom/fan').set(FireSwitch)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-    if Light is not None:
-        ServerSYNCStatus(MYAPP, "Updating Light St...", ConsoleLog)
-        db.reference('LivingRoom/light').set(Light)
+    if LightSwitch is not None:
+        ServerSYNCStatus(MYAPP, "Updating LightSwitch St...", ConsoleLog)
+        db.reference('LivingRoom/light').set(LightSwitch)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if GET == True:
         ServerSYNCStatus(MYAPP, "Getting Fire Sw...", ConsoleLog)
         FireSwitch = db.reference('LivingRoom/light').get(False)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-        ServerSYNCStatus(MYAPP, "Getting Light Sw...", ConsoleLog)
+        ServerSYNCStatus(MYAPP, "Getting LightSwitch Sw...", ConsoleLog)
         LightSwitch = db.reference('LivingRoom/fan').get(False)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
         return [ FireSwitch, LightSwitch ]

@@ -14,21 +14,22 @@ from Sensor import GetTemperature, GetHumidity, GetGAS, GetFlame
 from Server import ServerSYNC
 from Predict import PredictFlaming
 from Exec   import Exec
+from Sensor import Sensor
 
-############################# VARS #################################
-Exec = Exec()
+############################# GLOBAL VARS #################################
 
 
-############################# FUNCTIONS #################################
+
+############################# GLOBAL FUNCTIONS #################################
 """
-
 """
 def ValueFormat(val, prefix = '', suffix = ''):
     if val >= 0:
         return prefix + str(val) + suffix
     return prefix + '--' + suffix
 
-
+"""
+"""
 def FullSceenButtonAction(MYAPP):
     MYAPP.fullscreen_val = ~ MYAPP.fullscreen_val
     if MYAPP.fullscreen_val == True:
@@ -36,6 +37,8 @@ def FullSceenButtonAction(MYAPP):
     else:
         MYAPP.showNormal()
 
+"""
+"""
 def RebootButtonAction(myapp):
     sec = 10
     while sec > 0:
@@ -43,6 +46,8 @@ def RebootButtonAction(myapp):
         time.sleep(1)
     subprocess.Popen("sh reboot.sh", shell=True)
 
+"""
+"""
 def PeopleDetection(myapp):
     if myapp.camera_streaming_val == False:
         return
@@ -77,19 +82,15 @@ class SensorReadingAndServerStreaming(QObject):
     def __init__(self, myapp):
         super().__init__(parent=None)
         self.myapp = myapp
-        self.Temp = 0.0
-        self.Humid = 0.0
-        self.GAS = 0.0
-        self.Flame = 0.0
-        self.Smoke = 0.0
+        self.Sensor = Sensor()
         self.LightSwitch = False
         self.FireSwitch  = False
 
-    # ONFF
+    # 'ON' / 'OFF'
     def _ONOFF(self, var):
-        if var > 0.0:
-            return "ON"
-        return "OFF"
+        if vaf > 0.0:
+            return 'ON'
+        return 'OFF'
 
     # XNOR
     def _xnor(self, A, B):
@@ -98,24 +99,13 @@ class SensorReadingAndServerStreaming(QObject):
         return False
 
     """
-    Update self.Temp, self.Humid, self.GAS, self.Flame.
-    Return Tuple includes sensor data
-    """
-    def GetDataSensor(self):
-        self.Temp = GetTemperature()
-        self.Humid = GetHumidity()
-        self.GAS = GetGAS()
-        self.Flame = GetFlame()
-        return (self.Temp, self.Humid, self.GAS, self.Flame)
-
-    """
     The conclusion of whether there is a fire or not is based on the values obtained from the sensors and predictions from machine learning.
     TODO: rewrite condition
     """
     def isFlaming(self):
-        if self.Flame == 0:
-            if self.Temp < 45.0:
-                if self.GAS == 0:
+        if self.Sensor.Flame == 0:
+            if self.Sensor.Temp < 45.0:
+                if self.Sensor.GAS == 0:
                     return True
         return False
 
@@ -123,15 +113,22 @@ class SensorReadingAndServerStreaming(QObject):
     Update data onto UI.
     """
     def UpdateUI(self):
-        self.myapp.ui.temp_value.setText(ValueFormat(self.Temp, suffix=" oC"))
-        self.myapp.ui.humid_value.setText(ValueFormat(self.Humid, suffix=" %"))
-        self.myapp.ui.GAS_value.setText(ValueFormat(self.GAS, suffix=""))
+        self.myapp.ui.temp_value.setText(ValueFormat(self.Sensor.Temp, suffix=" oC"))
+        self.myapp.ui.humid_value.setText(ValueFormat(self.Sensor.Humid, suffix=" %"))
+        self.myapp.ui.GAS_value.setText(ValueFormat(self.Sensor.GAS, suffix=""))
 
     """
     Server sync.
     """
     def ServerSYNC(self):
-        self.LightSwitch, self.FireSwitch = ServerSYNC(Temp=self.Temp, Humid=self.Humid, MYAPP=self.myapp, GET=True)
+        self.LightSwitch, self.FireSwitch = ServerSYNC( 
+            Temp=self.Sensor.Temp, 
+            Humid=self.Sensor.Humid,
+            GAS=self.Sensor.GAS,
+            Fire=self._ONOFF(self.myapp.fire_waring_value),
+            MYAPP=self.myapp, 
+            GET=True
+        )
 
     def SetResetLightState(self):
         FinalLightState = self._xnor(
@@ -167,14 +164,13 @@ class SensorReadingAndServerStreaming(QObject):
         # Doing and doing
         while True:
             # reading sensor
-            self.GetDataSensor()
-            time.sleep(1)
-            # processing
+            self.Sensor.Read()
+            # processing based on SensorData
             self.AutoSetFireAlert()
-
+            # Start/Stop update Temp/Humid/CO2 on UI
             if self.myapp.sensor_read_val == True:
                 self.UpdateUI()
-
+            # SYNC to server
             if self.myapp.server_streaming_val == True:
                 if InternetConnectionCheck() == False:
                     self.myapp._SetNotification(2, "Internet lost!")
@@ -187,9 +183,7 @@ class SensorReadingAndServerStreaming(QObject):
         # Send back finished signal !
         self.finished.emit()
 
-    def __del__():
-        self.exec.BuzzerSet(0)
-
+########################################################################
 """
 Worker class: FireWarning
 Running Warning actions.
@@ -199,6 +193,7 @@ class FireWarning(QObject):
     def __init__(self, myapp):
         super().__init__(parent=None)
         self.myapp = myapp
+        self.Exec = Exec()
 
 
     def FireWarningAction(self):
@@ -218,9 +213,9 @@ class FireWarning(QObject):
             dots = dots + "!"
             if len(dots) > 3:
                 dots = ""
-            Exec.BuzzerSquaredPulse(0.25)
+            self.Exec.BuzzerSquaredPulse(0.25)
             self.myapp.ui.FireWarningBar.setVisible(False)
-            Exec.BuzzerSquaredPulse(0.25)
+            self.Exec.BuzzerSquaredPulse(0.25)
 
         self.myapp.fire_waring_value = False
         self.myapp.ui.FireWarningBar.setVisible(False)
@@ -230,6 +225,7 @@ class FireWarning(QObject):
         
         self.finished.emit()
 
+########################################################################
 """
 Worker class
 """
@@ -247,47 +243,3 @@ class CameraStreaming(QObject):
             time.sleep(0.041666)
         self.myapp.picam2.stop()
         self.finished.emit()
-
-"""
-Worker class: ServerStreaming
-NOTE:
-    This class has been deleted after merged two classes
-    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
-    to prevent 'CRASHED' from simultaneously using GPIO BUS.
-"""
-# class ServerStreaming(QObject):
-#     finished = pyqtSignal()
-#     def __init__(self, myapp):
-#         super().__init__(parent=None)
-#         self.myapp = myapp
-
-#     def UpdateData(self):
-#         msg = "Sent "
-#         while self.myapp.server_streaming_val == True:
-#             msg1 = str(GetTemperature()) + " oC "
-#             msg2 = str(GetHumidity()) + " % "
-#             msg3 = "--"
-#             self.myapp.ui.ServerConnection_Value.setText( msg + msg1 + msg2 + msg3)
-#             time.sleep(1)
-#         self.finished.emit()
-
-"""
-Worker class: SensorReading
-NOTE:
-    This class has been deleted after merged two classes
-    SensorReading and ServerStreaming into class SensorReadingAndServerStreaming
-    to prevent 'CRASHED' from simultaneously using GPIO BUS.
-"""
-# class SensorReading(QObject):
-#     finished = pyqtSignal()
-#     def __init__(self, myapp):
-#         super().__init__(parent=None)
-#         self.myapp = myapp
-
-#     def UpdateData(self):
-#         while self.myapp.sensor_read_val == True:
-#             self.myapp.ui.temp_value.setText(str(GetTemperature()) + " oC")
-#             self.myapp.ui.humid_value.setText(str(GetHumidity()) + " %")
-#             self.myapp.ui.GAS_value.setText("--")
-#             time.sleep(1)
-#         self.finished.emit()

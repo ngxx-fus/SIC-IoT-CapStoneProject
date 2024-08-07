@@ -17,3 +17,8 @@ MYAPP.files
 MYAPP.cflags
 MYAPP.cflags
 UI.pyproject.user.e8738d7
+__pycache__/Sensor.cpython-311.pyc
+__pycache__/Predict.cpython-311.pyc
+__pycache__/Sensor.cpython-311.pyc
+__pycache__/ui_form.cpython-311.pyc
+__pycache__/Server.cpython-311.pyc

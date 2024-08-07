@@ -299,10 +299,12 @@ class MYAPP(QWidget):
             if priority_setter == True:
                 self.fire_waring_value = True
                 self._FireWaring()
+                return
             elif priority_setter == False:
                 self.thread3.exit()
                 self.fire_waring_value = False
                 self._ClearNotification(code=1)
+                return
             else:
                 return #1
 

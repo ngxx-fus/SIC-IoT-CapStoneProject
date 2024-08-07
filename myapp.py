@@ -306,8 +306,6 @@ class MYAPP(QWidget):
     def _SetResetFireWaring(self, priority_flag = False, priority_setter = False):
         # Priority mode
         if priority_flag == True:
-            self._SetFireWarningButtonTitle(count=0)
-            self.fire_waring_clicked_count = 0
             if priority_setter == True:
                 self.fire_waring_value = True
                 self._FireWaring()

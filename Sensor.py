@@ -17,8 +17,8 @@ def GetTemperature():
         This function is gonna to be dev soon
         Try latter!
     """
-    print("Called: Sensor.GetTemperature")
-    # print(msg)
+    # print("Called: Sensor.GetTemperature")
+    # # print(msg)
     if IO.input == IO.HIGH:
         randint(17, 30)
     return randint(17, 50)
@@ -28,8 +28,8 @@ def GetHumidity():
         This function is gonna to be dev soon.
         Plase try again latter!
     """
-    print("Called: Sensor.GetHumidity")
-    # print(msg)
+    # print("Called: Sensor.GetHumidity")
+    # # print(msg)
     return randint(60, 100)
 
 def GetGAS():
@@ -37,8 +37,8 @@ def GetGAS():
         This function is gonna to be dev soon.
         Plase try again latter!
     """
-    print("Called: Sensor.GetGAS")
-    # print(msg)
+    # print("Called: Sensor.GetGAS")
+    # # print(msg)
     return randint(00, 100)/100
 
 def GetFlame():
@@ -46,6 +46,6 @@ def GetFlame():
         This function is gonna to be dev soon.
         Plase try again latter!
     """
-    print("Called: Sensor.GetFlame")
-    # print(msg)
+    # print("Called: Sensor.GetFlame")
+    # # print(msg)
     return randint(00, 100)/100

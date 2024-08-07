@@ -403,6 +403,6 @@ class MYAPP(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = MYAPP()
-    widget.showFullScreen()
-    # widget.showNormal()
+    # widget.showFullScreen()
+    widget.showNormal()
     sys.exit(app.exec())

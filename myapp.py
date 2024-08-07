@@ -214,7 +214,7 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc truyền hình ảnh ở một luồng (thread) khác.
     """
     def _CameraStreaming(self):
-        if hasattr(slef, "thread1") == True:
+        if hasattr(self, "thread1") == True:
             return
         #
         self.picam2.start()
@@ -389,7 +389,7 @@ class MYAPP(QWidget):
     Hàm huỷ, xoá các chân IO đã đặt.
     NOTE: IO được khai báo ở tập tin support_functions.py.
     """
-    def __del__():
+    def __del__(self):
         IO.cleanup()
 
 if __name__ == "__main__":

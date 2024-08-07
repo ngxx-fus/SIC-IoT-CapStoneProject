@@ -72,54 +72,61 @@ def InternetConnectionCheck():
         
 ############################# CLASSES #################################
 
-"""
-Worker class: SensorReadingAndServerStreaming
-To read sensor data, update value onto UI, SYNC to server.
-"""
 class SensorReadingAndServerStreaming(QObject):
+    """
+    Worker class: SensorReadingAndServerStreaming
+    To read sensor data, update value onto UI, SYNC to server.
+    """
     finished = pyqtSignal()
+
     def __init__(self, myapp):
         super().__init__(parent=None)
         self.myapp = myapp
         self.Sensor = Sensor()
+        self.Exec   = Exec()
         self.LightSwitch = False
         self.FireSwitch  = False
 
-    # 'ON' / 'OFF'
+    
     def _ONOFF(self, var):
+        """
+        Return str  'ON' / 'OFF' based on bool(var)
+        """
         if var > 0.0:
             return 'ON'
         return 'OFF'
 
-    # XNOR
     def _xnor(self, A, B):
+        """
+        Return True/False based on bool (A~^B)
+        """
         if A == B:
             return True
         return False
 
-    """
-    The conclusion of whether there is a fire or not is based on the values obtained from the sensors and predictions from machine learning.
-    TODO: rewrite condition
-    """
     def isFlaming(self):
+        """
+        The conclusion of whether there is a fire or not is based on the values obtained from the sensors and predictions from machine learning.
+        TODO: rewrite condition
+        """
         if self.Sensor.Flame == 0:
             if self.Sensor.Temp < 45.0:
                 if self.Sensor.GAS == 0:
                     return True
         return False
 
-    """
-    Update data onto UI.
-    """
     def UpdateUI(self):
+        """
+        Update data onto UI.
+        """
         self.myapp.ui.temp_value.setText(ValueFormat(self.Sensor.Temp, suffix=" oC"))
         self.myapp.ui.humid_value.setText(ValueFormat(self.Sensor.Humid, suffix=" %"))
         self.myapp.ui.GAS_value.setText(ValueFormat(self.Sensor.GAS, suffix=""))
 
-    """
-    Server sync.
-    """
     def ServerSYNC(self):
+        """
+        Server sync.
+        """
         self.LightSwitch, self.FireSwitch = ServerSYNC( 
             Temp=self.Sensor.Temp, 
             Humid=self.Sensor.Humid,
@@ -134,12 +141,12 @@ class SensorReadingAndServerStreaming(QObject):
             self.myapp.light_switch_value,
             self.LightSwitch
         )
-        Exec.LightSet(_xnor(FinalLightState))
+        Exec.LightSet(FinalLightState)
 
-    """
-    Auto set FireAlert based on isFlaming()
-    """
     def AutoSetFireAlert(self):
+        """
+        Auto set FireAlert based on isFlaming()
+        """
         FireState_Auto = False
         FireState_Switch_Web = False
         FireState_Switch_Local = self.myapp.fire_switch_value
@@ -155,10 +162,12 @@ class SensorReadingAndServerStreaming(QObject):
         if FinalFireState != self.myapp.fire_waring_value:
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)
 
-    """
-    Work based on data from sensor.
-    """
+
+
     def Working(self):
+        """
+        Work based on data from sensor.
+        """
         # Doing and doing
         while True:
             # reading sensor
@@ -183,12 +192,14 @@ class SensorReadingAndServerStreaming(QObject):
         self.finished.emit()
 
 ########################################################################
-"""
-Worker class: FireWarning
-Running Warning actions.
-"""
 class FireWarning(QObject):
+    """
+    Worker class: FireWarning
+    Running Warning actions.
+    """
+
     finished = pyqtSignal()
+
     def __init__(self, myapp):
         super().__init__(parent=None)
         self.myapp = myapp
@@ -196,7 +207,13 @@ class FireWarning(QObject):
 
 
     def FireWarningAction(self):
-        print("[INFO] FireWarning.FireWarningAction: ", self.myapp.fire_waring_value)
+        """
+        Do:
+        + BLink buzzer
+        + Blink FireBar on UI
+        + Disable RebootButton, Camera_Control, ServerSyncButton
+        """
+        # print("[INFO] FireWarning.FireWarningAction: ", self.myapp.fire_waring_value)
         # if self.myapp.fire_waring_value:
         #     return
         self.myapp.ui.RebootButton.setEnabled(False)
@@ -206,7 +223,7 @@ class FireWarning(QObject):
         msg = "FireWarning"
         dots = "!"
         while self.myapp.fire_waring_value == True:
-            print("[[INFO] FireWarning.FireWarningAction.Loop: ", self.myapp.fire_waring_value)
+            # print("[[INFO] FireWarning.FireWarningAction.Loop: ", self.myapp.fire_waring_value)
             self.myapp.ui.FireWarningBar.setVisible(True)
             self.myapp.ui.Notification1_Value.setText(msg + dots)
             dots = dots + "!"
@@ -225,16 +242,27 @@ class FireWarning(QObject):
         self.finished.emit()
 
 ########################################################################
-"""
-Worker class
-"""
 class CameraStreaming(QObject):
+    """
+    Worker class: CameraStreaming
+    + Capture image using picamera2 then save to './Imgs/img.jpg'
+    + Read the image from './Imgs/img.jpg' as QPixmap
+    + Show QPixmap in QLabel.
+    """
+
     finished = pyqtSignal()
+ 
     def __init__(self, myapp):
         super().__init__()
         self.myapp = myapp
 
     def UpdateData(self):
+        """
+        + Capture image using picamera2 then save to './Imgs/img.jpg'
+        + Read the image from './Imgs/img.jpg' as QPixmap
+        + Show QPixmap in QLabel.
+        + Sleep ~0.041666second --> ~24fps
+        """
         while self.myapp.camera_streaming_val == True:
             self.myapp.picam2.capture_file("./Imgs/img.jpg")
             self.myapp.pixmap.load("./Imgs/img.jpg")

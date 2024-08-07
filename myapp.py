@@ -328,7 +328,7 @@ class MYAPP(QWidget):
         # Normal mode
         print("""[INFO] MYAPP._SetResetFireWaring: Running normal mode...""")
         if self.fire_waring_value == True:
-            if hasattr(self, "thread3") == False or self.thread3.isRunning() == False:
+            if hasattr(self, "thread3") == False:
                 print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
             else:
                 print("[INFO] MYAPP._SetResetFireWaring: Reset")

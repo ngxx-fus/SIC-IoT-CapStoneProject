@@ -132,9 +132,6 @@ class MYAPP(QWidget):
     Hàm đặt lại <Notification1> và <Notification2>.
     """
     def _ClearAllNotification(self):
-        # if self.fire_waring_value == False:
-            # self.fire_waring_clicked_count = 0
-            # self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
         self.ui.Notification1_Value.setText("<Notification 1>")
         self.ui.Notification2_Value.setText("<Notification 2>")
 
@@ -146,9 +143,6 @@ class MYAPP(QWidget):
         + 11B:  Notification 1 & 2
     """
     def _ClearNotification(self, code = 3):
-        if self.fire_waring_value == False:
-            self.fire_waring_clicked_count = 0
-            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
         if code & 1 != 0:
             self.ui.Notification1_Value.setText("<Notification 1>")
         if code & 2 != 0:

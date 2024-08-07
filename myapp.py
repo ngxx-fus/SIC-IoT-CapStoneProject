@@ -301,7 +301,7 @@ class MYAPP(QWidget):
         # Priority mode
         if priority_flag == True:
             if priority_setter == True:
-                self.fire_waring_value = True
+                
                 self._FireWaring()
                 return
             elif priority_setter == False:

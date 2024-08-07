@@ -197,6 +197,7 @@ class FireWarning(QObject):
 
 
     def FireWarningAction(self):
+        print("[[INFO] FireWarning.FireWarningAction: ", self.myapp.fire_waring_value)
         self.myapp.ui.RebootButton.setEnabled(False)
         self.myapp.ui.Camera_Control.setEnabled(False)
         self.myapp.ui.ServerSyncButton.setEnabled(False)
@@ -215,6 +216,7 @@ class FireWarning(QObject):
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)
         self.myapp.ui.ServerSyncButton.setEnabled(True)
+        
         self.finished.emit()
 
 """

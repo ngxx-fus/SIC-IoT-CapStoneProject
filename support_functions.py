@@ -157,6 +157,7 @@ class SensorReadingAndServerStreaming(QObject):
         FinalFireState = FireState_Auto or FireState_Switch
         if FinalFireState != self.myapp.fire_waring_value:
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)
+        time.sleep(1)
 
     """
     Work based on data from sensor.

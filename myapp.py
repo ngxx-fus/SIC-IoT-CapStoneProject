@@ -313,11 +313,15 @@ class MYAPP(QWidget):
                 return #1
 
         # Normal mode
+        print("""[INFO] MYAPP._SetResetFireWaring:
+                    Running normal mode...""")
         if self.fire_waring_value == True:
             self.thread3.exit()
             self._ClearNotification(code=1)
+            PRINT("[INFO] MYAPP._SetResetFireWaring: Reset")
         self.fire_waring_value = self._not(self.fire_waring_value)
         if self.fire_waring_value == True:
+            PRINT("[INFO] MYAPP._SetResetFireWaring: Set")
             self._FireWaring()
 
     """

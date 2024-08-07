@@ -15,6 +15,10 @@ from Server import ServerSYNC
 from Predict import PredictFlaming
 from Exec   import Exec
 
+############################# VARS #################################
+Exec = Exec()
+
+
 ############################# FUNCTIONS #################################
 """
 

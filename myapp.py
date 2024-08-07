@@ -56,7 +56,7 @@ class MYAPP(QWidget):
         self.light_switch_value = False
         self.fire_switch_value  = False
         self.camera_streaming_val = True
-        self.server_streaming_val = False
+        self.server_streaming_val = True
         self.people_detection_val = False
         self.fire_waring_value = False
         self.auto_start_fire_alert = True
@@ -79,8 +79,7 @@ class MYAPP(QWidget):
         self.ui.AutoStopFireAlert.clicked.connect(self._SetAutoStopFireAlert)
         self.ui.LightButton.clicked.connect(self._SetResetLightState)
         self.ui.FireWarningBar.setVisible(False)
-        # self._SetNotification(1, "Auto Set Fire Alert: {}".format(self.auto_start_fire_alert))
-        # self._SetNotification(2, "Auto Reset Fire Alert: {}".format(self.auto_stop_fire_alert))
+        self._SetNotification(1, "Auto Set/Reser Fire Alarm: {}".format(self.auto_start_fire_alert))
         # logger
         #TODO: create logger
 

@@ -214,7 +214,7 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc truyền hình ảnh ở một luồng (thread) khác.
     """
     def _CameraStreaming(self):
-        if self.camera_streaming_val == True:
+        if hasattr(slef, "thread1") == True:
             return
         #
         self.picam2.start()
@@ -325,7 +325,7 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc cảnh báo cháy ở luồng khác.
     """
     def _FireWaring(self):
-        if self.fire_waring_value == True:
+        if hasattr(self, "thread3") == True:
             return
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)

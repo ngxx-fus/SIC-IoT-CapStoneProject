@@ -133,8 +133,8 @@ class MYAPP(QWidget):
     """
     def _ClearAllNotification(self):
         if self.fire_waring_value == False:
-            self.fire_waring_clicked_count = 0
-            self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
+            # self.fire_waring_clicked_count = 0
+            # self._SetFireWarningButtonTitle(self.fire_waring_clicked_count)
         self.ui.Notification1_Value.setText("<Notification 1>")
         self.ui.Notification2_Value.setText("<Notification 2>")
 

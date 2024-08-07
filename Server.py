@@ -11,7 +11,6 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://nhan-3660d-default-rtdb.firebaseio.com/'
 })
 
-
 """
 This function get/set value on Firebase.
 Parameters:
@@ -33,7 +32,8 @@ def ServerSYNCStatus(MYAPP = None, msg = "", ConsoleLog = False):
     if ConsoleLog == True:
         print("ServerSNYC: ", msg)
 
-def ServerSYNC(Temp = None, Humid = None, Smoke = None, Fire = None, Fan = None, Light = None, MYAPP = None, ConsoleLog = False):
+def ServerSYNC(Temp = None, Humid = None, Smoke = None, Fire = None, Fan = None, 
+                    Light = None, GET = False, MYAPP = None, ConsoleLog = False):
     if Temp is not None:
         ServerSYNCStatus(MYAPP, "Updating Temp...", ConsoleLog)
         db.reference('LivingRoom/nhietdo').set(Temp)
@@ -58,13 +58,15 @@ def ServerSYNC(Temp = None, Humid = None, Smoke = None, Fire = None, Fan = None,
         ServerSYNCStatus(MYAPP, "Updating Light St...", ConsoleLog)
         db.reference('LivingRoom/light').set(Light)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-    ServerSYNCStatus(MYAPP, "Getting Fire Sw...", ConsoleLog)
-    FireSwitch = db.reference('LivingRoom/light').get(False)
-    ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-    ServerSYNCStatus(MYAPP, "Getting Light Sw...", ConsoleLog)
-    LightSwitch = db.reference('LivingRoom/fan').get(False)
-    ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-    return [ FireSwitch, LightSwitch ]
+    if GET == True:
+        ServerSYNCStatus(MYAPP, "Getting Fire Sw...", ConsoleLog)
+        FireSwitch = db.reference('LivingRoom/light').get(False)
+        ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
+        ServerSYNCStatus(MYAPP, "Getting Light Sw...", ConsoleLog)
+        LightSwitch = db.reference('LivingRoom/fan').get(False)
+        ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
+        return [ FireSwitch, LightSwitch ]
+    return [None, None]
 
 if __name__ == "__main__":
     print(ServerSYNC(Fire='ON'))

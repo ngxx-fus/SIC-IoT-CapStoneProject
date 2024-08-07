@@ -10,14 +10,14 @@ from PySide6.QtCore import QSize
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from picamera2 import Picamera2, Preview
 
-from Sensor import GetTemperature, GetHumidity, GetCO2, GetFlame
+from Sensor import GetTemperature, GetHumidity, GetGAS, GetFlame
 from Server import ServerSYNC
 from Predict import PredictFlaming
+from Exec   import Exec
 
 ############################# FUNCTIONS #################################
 """
-HĂ m tráº£ vá» dáº¡ng chuá»—i cá»§a val náº¿u khĂ´ng Ă¢m,ngÆ°á»£c láº¡i tráº£ vá» "--".
-Cho phĂ©p chĂ¨n thĂªm tiá»n tá»‘ (prefix) vĂ  háº­u tá»‘ (suffix)
+
 """
 def ValueFormat(val, prefix = '', suffix = ''):
     if val >= 0:
@@ -55,7 +55,7 @@ Return value:
 """
 def InternetConnectionCheck():
     try:
-        requests.head("http://www.google.com/", timeout=1)
+        requests.head("https://trankhanhnhan.github.io/sic-iot/Home.html", timeout=1)
         # Do something
         return True
     except requests.ConnectionError:
@@ -74,29 +74,43 @@ class SensorReadingAndServerStreaming(QObject):
         self.myapp = myapp
         self.Temp = 0.0
         self.Humid = 0.0
-        self.CO2 = 0.0
+        self.GAS = 0.0
         self.Flame = 0.0
         self.Smoke = 0.0
+        self.LightSwitch = False
+        self.FireSwitch  = False
+
+    # ONFF
+    def _ONOFF(self, var):
+        if var > 0.0:
+            return "ON"
+        return "OFF"
+
+    # XNOR
+    def _xnor(self, A, B):
+        if A == B:
+            return True
+        return False
 
     """
-    Update self.Temp, self.Humid, self.CO2, self.Flame.
+    Update self.Temp, self.Humid, self.GAS, self.Flame.
     Return Tuple includes sensor data
     """
     def GetDataSensor(self):
         self.Temp = GetTemperature()
         self.Humid = GetHumidity()
-        self.CO2 = GetCO2()
+        self.GAS = GetGAS()
         self.Flame = GetFlame()
-        return (self.Temp, self.Humid, self.CO2, self.Flame)
+        return (self.Temp, self.Humid, self.GAS, self.Flame)
 
     """
-    The conclusion of whether there is a fire or not is based on the values â€‹â€‹obtained from the sensors and predictions from machine learning.
+    The conclusion of whether there is a fire or not is based on the values obtained from the sensors and predictions from machine learning.
     TODO: rewrite condition
     """
     def isFlaming(self):
         if self.Flame == 0:
             if self.Temp < 45.0:
-                if self.CO2 == 0:
+                if self.GAS == 0:
                     return True
         return False
 
@@ -106,37 +120,30 @@ class SensorReadingAndServerStreaming(QObject):
     def UpdateUI(self):
         self.myapp.ui.temp_value.setText(ValueFormat(self.Temp, suffix=" oC"))
         self.myapp.ui.humid_value.setText(ValueFormat(self.Humid, suffix=" %"))
-        self.myapp.ui.CO2_value.setText(ValueFormat(self.CO2, suffix=""))
+        self.myapp.ui.GAS_value.setText(ValueFormat(self.GAS, suffix=""))
 
     """
     Server sync.
     """
     def ServerSYNC(self):
-        self.myapp.ui.ServerConnection_Value.setText("Updating data...")
-        Sending_Smoke = 'OFF'
-        if self.CO2 > 0.0:
-            Sending_Smoke = 'ON'
-        FireSwtich, LightSet = ServerSYNC(Temp=self.Temp, Humid=self.Humid, Smoke=Sending_Smoke, MYAPP=self.myapp)
-        print(FireSwtich, " - ", self.myapp.fire_waring_value)
-        if (FireSwtich == 'ON') and (self.myapp.fire_waring_value == False):
-            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
-        elif ((FireSwtich == 'OFF')) and (self.myapp.fire_waring_value == True):
-            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
-        self.myapp.ui.ServerConnection_Value.setText("Done!")
+        self.FireSwitch, self.LightSwitch = ServerSYNC(Temp=self.Temp, Humid=self.Humid, MYAPP=self.myapp, GET=True)
 
     """
     Auto set FireAlert based on isFlaming()
     """
     def AutoSetFireAlert(self):
+        FireState_Auto = False
+        FireState_Switch = self._xnor( self.myapp.fire_waring_value, self.FireSwitch )
+        # Detected flaming
         if self.isFlaming() == True:
+            # Not set alarm and Allow auto set fire alarm
             if self.myapp.fire_waring_value == False and self.myapp.auto_start_fire_alert == True:
-                self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=True)
-                if self.myapp.server_streaming_val == True:
-                    ServerSYNC(Fire='ON', MYAPP=self.myapp)
+                FireState_Auto = True
+        # Not detected flaming; Has set fire alarm and Allow auto reset fire alarm
         elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
-            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=False)
-            if self.myapp.server_streaming_val == True:
-                ServerSYNC(Fire='OFF', MYAPP=self.myapp)
+            FireState_Auto = False
+        FinalFireState = FireState_Auto or FireState_Switch
+        self.myapp._SetResetFireWaring(priority_flag=FinalFireState, priority_setter=FinalFireState)
 
     """
     Work based on data from sensor.
@@ -171,18 +178,12 @@ Running Warning actions.
 """
 class FireWarning(QObject):
     finished = pyqtSignal()
-    def __init__(self, myapp, BuzzerPin = 21):
+    def __init__(self, myapp):
         super().__init__(parent=None)
         self.myapp = myapp
-        self.BuzzerPin = BuzzerPin
-        IO.setmode(IO.BCM)
-        IO.setwarnings(False)
-        IO.setup(self.BuzzerPin, IO.OUT)
+
 
     def FireWarningAction(self):
-        # if self.myapp.server_streaming_val == False:
-            # self.myapp._StartStopServerSync()
-            # self.myapp._SetNotification(code=2, msg="Auto turn-on server SYNC!")
         self.myapp.ui.RebootButton.setEnabled(False)
         self.myapp.ui.Camera_Control.setEnabled(False)
         self.myapp.ui.ServerSyncButton.setEnabled(False)
@@ -204,15 +205,12 @@ class FireWarning(QObject):
             IO.output(self.BuzzerPin, IO.LOW)
             self.myapp.ui.FireWarningBar.setVisible(False)
             time.sleep(0.5)
-        if self.myapp.server_streaming_val == True:
-            FireSwtich, LightSet = ServerSYNC(Fire='OFF', MYAPP=self.myapp) #'Fire' meaning FireState (Detected or Not)
-            if FireSwtich == 'ON':
-                ServerSYNC(Fan='OFF', MYAPP=self.myapp)
         self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)
         self.myapp.ui.ServerSyncButton.setEnabled(True)
         self.finished.emit()
+
 """
 Worker class
 """
@@ -271,6 +269,6 @@ NOTE:
 #         while self.myapp.sensor_read_val == True:
 #             self.myapp.ui.temp_value.setText(str(GetTemperature()) + " oC")
 #             self.myapp.ui.humid_value.setText(str(GetHumidity()) + " %")
-#             self.myapp.ui.CO2_value.setText("--")
+#             self.myapp.ui.GAS_value.setText("--")
 #             time.sleep(1)
 #         self.finished.emit()

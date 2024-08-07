@@ -53,7 +53,8 @@ class MYAPP(QWidget):
         self.picam2 = Picamera2()
         self.picam2.start()
         self.pixmap = QPixmap("./Imgs/img.jpg")
-        self.light_vale = False
+        self.light_switch_value = False
+        self.fire_switch_value  = False
         self.camera_streaming_val = True
         self.server_streaming_val = False
         self.people_detection_val = False
@@ -289,10 +290,10 @@ class MYAPP(QWidget):
         if priority_flag == True:
             self._SetFireWarningButtonTitle(count=0)
             self.fire_waring_clicked_count = 0
-            if priority_setter == True and self.fire_waring_value == False:
+            if priority_setter == True:
                 self.fire_waring_value = True
                 self._FireWaring()
-            elif priority_setter == False and self.fire_waring_value == True:
+            elif priority_setter == False:
                 self.thread3.exit()
                 self.fire_waring_value = False
                 self._ClearNotification(code=1)
@@ -318,6 +319,8 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc cảnh báo cháy ở luồng khác.
     """
     def _FireWaring(self):
+        if self.fire_waring_value == True:
+            return
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)
         self.FireWarning.moveToThread(self.thread3)
@@ -340,7 +343,7 @@ class MYAPP(QWidget):
         Data = self.SensorReadingAndServerStreaming.GetDataSensor()
         self.ui.temp_value.setText(ValueFormat(Data[0], suffix=" oC"))
         self.ui.humid_value.setText(ValueFormat(Data[1], suffix=" %"))
-        self.ui.CO2_value.setText(ValueFormat(Data[2], suffix=" %"))
+        self.ui.GAS_value.setText(ValueFormat(Data[2], suffix=" %"))
         self.sensor_read_val = self._not(self.sensor_read_val)
 
     """

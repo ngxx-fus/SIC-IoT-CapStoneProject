@@ -131,7 +131,7 @@ class SensorReadingAndServerStreaming(QObject):
     Server sync.
     """
     def ServerSYNC(self):
-        self.FireSwitch, self.LightSwitch = ServerSYNC(Temp=self.Temp, Humid=self.Humid, MYAPP=self.myapp, GET=True)
+        self.LightSwitch, self.FireSwitch = ServerSYNC(Temp=self.Temp, Humid=self.Humid, MYAPP=self.myapp, GET=True)
 
     def SetResetLightState(self):
         FinalLightState = self._xnor(

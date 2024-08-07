@@ -78,10 +78,9 @@ class MYAPP(QWidget):
         self.ui.SetResetFireAlert_Button.clicked.connect(self._FireWaringButtonAction)
         self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
         self.ui.AutoStartFireAlert.clicked.connect(self._SetAutoStartFireAlert)
-        self.ui.AutoStopFireAlert.clicked.connect(self._SetAutoStopFireAlert)
         self.ui.LightButton.clicked.connect(self._SetResetLightState)
         self.ui.FireWarningBar.setVisible(False)
-        self._SetNotification(1, "Auto Set/Reser Fire Alarm: {}".format(self.auto_start_fire_alert))
+        self._SetNotification(1, "Auto Set Fire Alarm: {}".format(self.auto_start_fire_alert))
         # logger
         #TODO: create logger
 
@@ -108,7 +107,7 @@ class MYAPP(QWidget):
         Biến self.auto_start_fire_alert quyết định xem hệ thống có tự động kích hoạt cảnh báo hay không.
         """
         self.auto_start_fire_alert = self._not(self.auto_start_fire_alert)
-        self._SetNotification(2, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
+        self._SetNotification(2, "Auto set fire alarm: {}".format(self.auto_start_fire_alert))
 
     def _SetAutoStopFireAlert(self):
         """
@@ -121,9 +120,7 @@ class MYAPP(QWidget):
     def _RebootButtonAction(self):
         """
         Hàm thực hiện chức năng reboot.
-        Hoạt động: Đầu tiên set trạng thái của <Notification2> để thông báo sẽ tắt sau 10s - không thể huỷ lệnh này, và sau đó đếm ngược.
         """
-        self.ui.Notification2_Value.setText("Reboot after 10s - CANNOT CANCEL!")
         RebootButtonAction(self)
 
     def _SetResetLightState(self):
@@ -209,8 +206,8 @@ class MYAPP(QWidget):
         """
         Hàm thực hiện công việc truyền hình ảnh ở một luồng (thread) khác.
         """
-        if hasattr(self, "thread1") == True:
-            return
+        # if hasattr(self, "thread1") == True:
+        #     return
         #
         self.picam2.start()
         time.sleep(1) # warn-up time
@@ -230,9 +227,9 @@ class MYAPP(QWidget):
         self.thread1.start()
 
     def _StartStopServerSync(self):
-    """
-    Hàm bật tắt đồng bộ máy chủ.
-    """
+        """
+        Hàm bật tắt đồng bộ máy chủ.
+        """
         self.server_streaming_val = self._not(self.server_streaming_val)
 
 
@@ -287,21 +284,21 @@ class MYAPP(QWidget):
                     self.fire_waring_value = False
                     self._ClearNotification(code=1)
                     return
-            else:
+            # else:
                 # print("[INFO] MYAPP._SetResetFireWaring: Change to normal mode.")
 
         # Normal mode
         # print("""[INFO] MYAPP._SetResetFireWaring: Running normal mode...""")
         if self.fire_waring_value == True:
             if hasattr(self, "thread3") == True:
-                print("[INFO] MYAPP._SetResetFireWaring: Reset")
+                # print("[INFO] MYAPP._SetResetFireWaring: Reset")
                 self.thread3.exit()
                 self._ClearNotification(code=1)
         
         self.fire_waring_value = self._not(self.fire_waring_value)
         
         if self.fire_waring_value == True:
-            print("[INFO] MYAPP._SetResetFireWaring: Set")
+            # print("[INFO] MYAPP._SetResetFireWaring: Set")
             self.fire_waring_value = True
             self._FireWaring()
 
@@ -309,7 +306,7 @@ class MYAPP(QWidget):
         """
         Hàm thực hiện công việc cảnh báo cháy ở luồng khác.
         """
-        print("[INFO] MYAPP._FireWaring: Creating thread3!")
+        # print("[INFO] MYAPP._FireWaring: Creating thread3!")
         # if hasattr(self, "thread3") == True:
         #     print("[INFO] MYAPP._FireWaring: thread3 exist -> Abort!")
         #     return
@@ -328,10 +325,11 @@ class MYAPP(QWidget):
         Đồng thời quyết định việc cập nhật giá trị lên UI. (Lật trạng thái.)
         Có khả năng gây CRASHED vì sử dụng chung BUS.
         """
-        Data = self.SensorReadingAndServerStreaming.GetDataSensor()
-        self.ui.temp_value.setText(ValueFormat(Data[0], suffix=" oC"))
-        self.ui.humid_value.setText(ValueFormat(Data[1], suffix=" %"))
-        self.ui.GAS_value.setText(ValueFormat(Data[2], suffix=" %"))
+        Sensor = self.SensorReadingAndServerStreaming.Sensor
+        Sensor.Read()
+        self.ui.temp_value.setText(ValueFormat(Sensor.Temp, suffix=" oC"))
+        self.ui.humid_value.setText(ValueFormat(Sensor.Humid, suffix=" %"))
+        self.ui.GAS_value.setText(ValueFormat(Sensor.GAS))
         self.sensor_read_val = self._not(self.sensor_read_val)
 
     def _SensorReadingAndServerStreaming(self):

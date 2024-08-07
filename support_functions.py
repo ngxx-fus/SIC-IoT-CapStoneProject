@@ -39,10 +39,6 @@ def FullSceenButtonAction(MYAPP):
 """
 """
 def RebootButtonAction(myapp):
-    sec = 10
-    while sec > 0:
-        sec = sec - 1
-        time.sleep(1)
     subprocess.Popen("sh reboot.sh", shell=True)
 
 """
@@ -137,11 +133,12 @@ class SensorReadingAndServerStreaming(QObject):
         )
 
     def SetResetLightState(self):
+        #print(self.myapp.light_switch_value, self.LightSwitch)
         FinalLightState = self._xnor(
             self.myapp.light_switch_value,
-            self.LightSwitch
+            self.LightSwitch == 'ON'
         )
-        Exec.LightSet(FinalLightState)
+        self.Exec.LightSet(state=FinalLightState)
 
     def AutoSetFireAlert(self):
         """
@@ -172,11 +169,6 @@ class SensorReadingAndServerStreaming(QObject):
         while True:
             # reading sensor
             self.Sensor.Read()
-            # processing based on SensorData
-            self.AutoSetFireAlert()
-            # Start/Stop update Temp/Humid/CO2 on UI
-            if self.myapp.sensor_read_val == True:
-                self.UpdateUI()
             # SYNC to server
             if self.myapp.server_streaming_val == True:
                 if InternetConnectionCheck() == False:
@@ -186,6 +178,13 @@ class SensorReadingAndServerStreaming(QObject):
                     self.ServerSYNC()
             else:
                 self.myapp.ui.ServerConnection_Value.setText("Disconnected!")
+            # processing based on SensorData
+            self.AutoSetFireAlert()
+            # Start/Stop update Temp/Humid/CO2 on UI
+            if self.myapp.sensor_read_val == True:
+                self.UpdateUI()
+            # Light state change
+            self.SetResetLightState()
             # Delay 1s
             time.sleep(1)
         # Send back finished signal !

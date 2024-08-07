@@ -19,10 +19,11 @@ class Exec:
     def BuzzerSet(self, state):
         IO.output(self.BuzzerPin, self._HL(state))
 
-    def BuzzerPulse(self, time=1):
+    def BuzzerSquaredPulse(self, time=1):
         IO.output(self.BuzzerPin, self._HL(1))
-        sleep(time)
+        sleep(time/2)
         IO.output(self.BuzzerPin, self._HL(0))
+        sleep(time/2)
 
     def LightSet(self, state):
         IO.output(self.LightPin, self._HL(state))

@@ -77,9 +77,10 @@ class MYAPP(QWidget):
         self.ui.RebootButton.clicked.connect(self._RebootButtonAction)
         self.ui.AutoStartFireAlert.clicked.connect(self._SetAutoStartFireAlert)
         self.ui.AutoStopFireAlert.clicked.connect(self._SetAutoStopFireAlert)
+        self.ui.LightButton.clicked.connect(self._SetResetLightState)
         self.ui.FireWarningBar.setVisible(False)
-        # self._SetNotification(1, "Auto START Fire Alert: {}".format(self.auto_start_fire_alert))
-        # self._SetNotification(2, "Auto STOP Fire Alert: {}".format(self.auto_stop_fire_alert))
+        # self._SetNotification(1, "Auto Set Fire Alert: {}".format(self.auto_start_fire_alert))
+        # self._SetNotification(2, "Auto Reset Fire Alert: {}".format(self.auto_stop_fire_alert))
         # logger
         #TODO: create logger
 
@@ -123,6 +124,9 @@ class MYAPP(QWidget):
     def _RebootButtonAction(self):
         self.ui.Notification2_Value.setText("Reboot after 10s - CANNOT CANCEL!")
         RebootButtonAction(self)
+
+    def _SetResetLightState(self):
+        SetResetLightState()
 
     """
     Hàm đặt lại <Notification1> và <Notification2>.
@@ -210,6 +214,8 @@ class MYAPP(QWidget):
     Hàm thực hiện công việc truyền hình ảnh ở một luồng (thread) khác.
     """
     def _CameraStreaming(self):
+        if self.camera_streaming_val == True:
+            return
         #
         self.picam2.start()
         time.sleep(1) # warn-up time

@@ -61,6 +61,7 @@ def InternetConnectionCheck():
     except requests.ConnectionError:
         # Do something
         return False
+        
 ############################# CLASSES #################################
 
 """
@@ -128,6 +129,13 @@ class SensorReadingAndServerStreaming(QObject):
     def ServerSYNC(self):
         self.FireSwitch, self.LightSwitch = ServerSYNC(Temp=self.Temp, Humid=self.Humid, MYAPP=self.myapp, GET=True)
 
+    def SetResetLightState(self):
+        FinalLightState = self._xnor(
+            self.myapp.light_switch_value,
+            self.LightSwitch
+        )
+        Exec.LightSet(_xnor(FinalLightState))
+
     """
     Auto set FireAlert based on isFlaming()
     """
@@ -190,21 +198,13 @@ class FireWarning(QObject):
         self.myapp.ui.FireWarningBar.setVisible(True)
         msg = "FireWarning"
         dots = "!"
-        if self.myapp.server_streaming_val == True:
-            FireSwtich, LightSet = ServerSYNC(Fire='ON') #'Fire' meaning FireState (Detected or Not)
-            if FireSwtich == 'OFF':
-                ServerSYNC(Fan='ON')
         while self.myapp.fire_waring_value == True:
             self.myapp.ui.FireWarningBar.setVisible(True)
             self.myapp.ui.Notification1_Value.setText(msg + dots)
             dots = dots + "!"
             if len(dots) > 3:
-                dots = "!"
-            IO.output(self.BuzzerPin, IO.HIGH)
-            time.sleep(0.5)
-            IO.output(self.BuzzerPin, IO.LOW)
-            self.myapp.ui.FireWarningBar.setVisible(False)
-            time.sleep(0.5)
+                dots = ""
+            Exec.BuzzerSquaredPulse(1)
         self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)

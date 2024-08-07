@@ -298,12 +298,12 @@ class MYAPP(QWidget):
                 Gọi hàm thực hiện công việc cảnh báo cháy.
     """
     def _SetResetFireWaring(self, priority_flag = False, priority_setter = False):
-        print("""[INFO] MYAPP._SetResetFireWaring:
-                    Running priority mode...""")
+        print("""[INFO] MYAPP._SetResetFireWaring: Running priority mode...""")
         # Priority mode
         if priority_flag == True:
             if priority_setter == True:
                 print("[INFO] MYAPP._SetResetFireWaring: Set")
+                self.fire_waring_value = True
                 self._FireWaring()
                 return
             elif priority_setter == False:
@@ -317,8 +317,7 @@ class MYAPP(QWidget):
                 return #1
 
         # Normal mode
-        print("""[INFO] MYAPP._SetResetFireWaring:
-                    Running normal mode...""")
+        print("""[INFO] MYAPP._SetResetFireWaring: Running normal mode...""")
         if self.fire_waring_value == True:
             self.thread3.exit()
             self._ClearNotification(code=1)

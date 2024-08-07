@@ -209,6 +209,7 @@ class FireWarning(QObject):
             if len(dots) > 3:
                 dots = ""
             Exec.BuzzerSquaredPulse(1)
+            self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)

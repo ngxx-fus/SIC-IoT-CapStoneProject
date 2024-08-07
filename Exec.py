@@ -26,6 +26,3 @@ class Exec:
 
     def LightSet(self, state):
         IO.output(self.LightPin, self._HL(state))
-    
-    def __del__(self):
-        IO.cleanup()

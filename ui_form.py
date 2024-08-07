@@ -153,7 +153,7 @@ class Ui_MYAPP(object):
         self.SAMSUNGLOGO.setText("")
         self.SIC_LOGO.setText(QCoreApplication.translate("MYAPP", u"INNOVATION CAMPUS", None))
         self.groupBox.setTitle("")
-        self.project_name.setText(QCoreApplication.translate("MYAPP", u"H\u1ec6 TH\u1ed0NG GI\u00c1M S\u00c1T V\u00c0 C\u1ea2NH B\u00c1O CH\u00c1Y CHO C\u0102N H\u1ed8 CHUNG C\u01af.", None))
+        self.project_name.setText(QCoreApplication.translate("MYAPP", u"FIRE SAFETY AND MONITORING SYSTEM FOR APARTMENTS", None))
         self.Widget.setTitle(QCoreApplication.translate("MYAPP", u"Widget", None))
         self.temp_title.setText(QCoreApplication.translate("MYAPP", u"Temperature:", None))
         self.humid_title.setText(QCoreApplication.translate("MYAPP", u"Humidity:", None))

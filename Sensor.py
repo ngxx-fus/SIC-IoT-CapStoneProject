@@ -21,9 +21,10 @@ class Sensor:
         self.Flame = False
         
         ###### setup pins ######
-        IO.DTH11_OutPin = 26
-        IO.GAS_OutPin = 16
+        self.DTH11_OutPin = 26
+        self.GAS_OutPin = 16
         IO.setup(self.DTH11_OutPin, IO.IN, pull_up_down=IO.PUD_DOWN)
+        IO.setup(self.GAS_OutPin, IO.IN, pull_up_down=IO.PUD_DOWN)
         
         ###### lambda functions ######
         self.GetTemperature = lambda: self.Temp

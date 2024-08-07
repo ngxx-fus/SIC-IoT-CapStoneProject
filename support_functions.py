@@ -10,7 +10,6 @@ from PySide6.QtCore import QSize
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from picamera2 import Picamera2, Preview
 
-from Sensor import GetTemperature, GetHumidity, GetGAS, GetFlame
 from Server import ServerSYNC
 from Predict import PredictFlaming
 from Exec   import Exec
@@ -88,7 +87,7 @@ class SensorReadingAndServerStreaming(QObject):
 
     # 'ON' / 'OFF'
     def _ONOFF(self, var):
-        if vaf > 0.0:
+        if var > 0.0:
             return 'ON'
         return 'OFF'
 
@@ -152,10 +151,9 @@ class SensorReadingAndServerStreaming(QObject):
             FireState_Auto = True
         # Combination
         FinalFireState =  FireState_Auto or FireState_Switch_Web or FireState_Switch_Local
-        print(FinalFireState,   FireState_Auto, FireState_Switch_Web, FireState_Switch_Local)
+        # print(FinalFireState,   FireState_Auto, FireState_Switch_Web, FireState_Switch_Local)
         if FinalFireState != self.myapp.fire_waring_value:
             self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)
-        # time.sleep(1)
 
     """
     Work based on data from sensor.
@@ -179,7 +177,8 @@ class SensorReadingAndServerStreaming(QObject):
                     self.ServerSYNC()
             else:
                 self.myapp.ui.ServerConnection_Value.setText("Disconnected!")
-
+            # Delay 1s
+            time.sleep(1)
         # Send back finished signal !
         self.finished.emit()
 

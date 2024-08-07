@@ -198,7 +198,7 @@ class FireWarning(QObject):
 
 
     def FireWarningAction(self):
-        print("[[INFO] FireWarning.FireWarningAction: ", self.myapp.fire_waring_value)
+        print("[INFO] FireWarning.FireWarningAction: ", self.myapp.fire_waring_value)
         # if self.myapp.fire_waring_value:
         #     return
         self.myapp.ui.RebootButton.setEnabled(False)

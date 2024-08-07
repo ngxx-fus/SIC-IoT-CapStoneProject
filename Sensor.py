@@ -32,12 +32,12 @@ def GetHumidity():
     # print(msg)
     return randint(60, 100)
 
-def GetCO2():
+def GetGAS():
     msg = """
         This function is gonna to be dev soon.
         Plase try again latter!
     """
-    print("Called: Sensor.GetCO2")
+    print("Called: Sensor.GetGAS")
     # print(msg)
     return randint(00, 100)/100
 

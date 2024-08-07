@@ -3,6 +3,7 @@
         "myapp.py",
         "form.ui",
         "ui_form.py",
+        "Exec.py",
         "Sensor.py",
         "Server.py",
         "Predict.py",

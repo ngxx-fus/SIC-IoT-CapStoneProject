@@ -55,7 +55,7 @@ class MYAPP(QWidget):
         self.pixmap = QPixmap("./Imgs/img.jpg")
         self.light_switch_value = False
         self.fire_switch_value  = False
-        self.camera_streaming_val = False
+        self.camera_streaming_val = True
         self.server_streaming_val = False
         self.people_detection_val = False
         self.fire_waring_value = False

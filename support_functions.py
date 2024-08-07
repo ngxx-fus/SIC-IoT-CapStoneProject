@@ -145,7 +145,7 @@ class SensorReadingAndServerStreaming(QObject):
     """
     def AutoSetFireAlert(self):
         FireState_Auto = False
-        FireState_Switch_Web = self._xnor( self.myapp.fire_waring_value, self.FireSwitch )
+        FireState_Switch_Web = self.FireSwitch
         FireState_Switch_Local = self.myapp.fire_switch_value
         # Detected flaming
         if self.isFlaming() == True:
@@ -155,10 +155,9 @@ class SensorReadingAndServerStreaming(QObject):
         # Not detected flaming; Has set fire alarm and Allow auto reset fire alarm
         elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
             FireState_Auto = False
-        FinalFireState = FireState_Auto or FireState_Switch or FireState_Switch_Local
-        if FinalFireState != self.myapp.fire_waring_value:
-            self.myapp.fire_waring_value = FinalFireState
-            self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)
+        # Combination
+        FinalFireState =  FireState_Auto or FireState_Switch_Web or FireState_Switch_Local
+        self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)
         # time.sleep(1)
 
     """

@@ -145,16 +145,14 @@ class SensorReadingAndServerStreaming(QObject):
     """
     def AutoSetFireAlert(self):
         FireState_Auto = False
-        FireState_Switch_Web = bool(self.FireSwitch == 'ON')
+        FireState_Switch_Web = False
         FireState_Switch_Local = self.myapp.fire_switch_value
+        # Check SYNCSERVER is enble
+        if self.myapp.server_streaming_val == True:
+            FireState_Switch_Web = bool(self.FireSwitch == 'ON')
         # Detected flaming
-        if self.isFlaming() == True:
-            # Not set alarm and Allow auto set fire alarm
-            if self.myapp.fire_waring_value == False and self.myapp.auto_start_fire_alert == True:
-                FireState_Auto = True
-        # Not detected flaming; Has set fire alarm and Allow auto reset fire alarm
-        elif self.myapp.fire_waring_value == True and self.myapp.auto_stop_fire_alert == True:
-            FireState_Auto = False
+        if self.isFlaming() == True and self.myapp.auto_start_fire_alert == True:
+            FireState_Auto = True
         # Combination
         FinalFireState =  FireState_Auto or FireState_Switch_Web or FireState_Switch_Local
         self.myapp._SetResetFireWaring(priority_flag=True, priority_setter=FinalFireState)

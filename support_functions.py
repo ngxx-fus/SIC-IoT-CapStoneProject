@@ -199,8 +199,8 @@ class FireWarning(QObject):
 
     def FireWarningAction(self):
         print("[[INFO] FireWarning.FireWarningAction: ", self.myapp.fire_waring_value)
-        if self.myapp.fire_waring_value:
-            return
+        # if self.myapp.fire_waring_value:
+        #     return
         self.myapp.ui.RebootButton.setEnabled(False)
         self.myapp.ui.Camera_Control.setEnabled(False)
         self.myapp.ui.ServerSyncButton.setEnabled(False)
@@ -217,6 +217,8 @@ class FireWarning(QObject):
             Exec.BuzzerSquaredPulse(0.25)
             self.myapp.ui.FireWarningBar.setVisible(False)
             Exec.BuzzerSquaredPulse(0.25)
+
+        self.myapp.fire_waring_value = False
         self.myapp.ui.FireWarningBar.setVisible(False)
         self.myapp.ui.RebootButton.setEnabled(True)
         self.myapp.ui.Camera_Control.setEnabled(True)

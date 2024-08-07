@@ -299,20 +299,21 @@ class MYAPP(QWidget):
     """
     def _SetResetFireWaring(self, priority_flag = False, priority_setter = False):
         print("""[INFO] MYAPP._SetResetFireWaring:
-                    Running normal mode...""")
+                    Running priority mode...""")
         # Priority mode
         if priority_flag == True:
             if priority_setter == True:
-                PRINT("[INFO] MYAPP._SetResetFireWaring: Set")
+                print("[INFO] MYAPP._SetResetFireWaring: Set")
                 self._FireWaring()
                 return
             elif priority_setter == False:
-                PRINT("[INFO] MYAPP._SetResetFireWaring: Set")
+                print("[INFO] MYAPP._SetResetFireWaring: Set")
                 self.thread3.exit()
                 self.fire_waring_value = False
                 self._ClearNotification(code=1)
                 return
             else:
+                print("[INFO] MYAPP._SetResetFireWaring: Do nothing")
                 return #1
 
         # Normal mode
@@ -332,6 +333,7 @@ class MYAPP(QWidget):
     """
     def _FireWaring(self):
         if hasattr(self, "thread3") == True:
+            print("[INFO] MYAPP._FireWaring: thread3 has created -> Abort")
             return
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)

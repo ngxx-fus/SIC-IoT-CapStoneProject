@@ -205,6 +205,7 @@ class FireWarning(QObject):
         msg = "FireWarning"
         dots = "!"
         while self.myapp.fire_waring_value == True:
+            print("[[INFO] FireWarning.FireWarningAction.Loop: ", self.myapp.fire_waring_value)
             self.myapp.ui.FireWarningBar.setVisible(True)
             self.myapp.ui.Notification1_Value.setText(msg + dots)
             dots = dots + "!"

@@ -332,7 +332,7 @@ class MYAPP(QWidget):
     """
     def _FireWaring(self):
         if hasattr(self, "thread3") == True:
-            print("[INFO] MYAPP._FireWaring: thread3 has created -> Abort")
+            print("[INFO] MYAPP._FireWaring: thread3 has been created -> Abort")
             return
         self.thread3 = QThread()
         self.FireWarning = FireWarning(self)

@@ -10,9 +10,5 @@
         "support_functions.py",
         "reboot.sh",
         "start_my_app.sh"
-    ],
-    "folder":[
-        "Informations",
-        "Imgs"
     ]
 }

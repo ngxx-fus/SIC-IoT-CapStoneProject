@@ -1,2 +1,20 @@
 # Be ignored files and folders:
 Informations/login.json
+MYAPP.cflags
+MYAPP.config
+MYAPP.creator
+MYAPP.creator.user
+MYAPP.cxxflags
+MYAPP.files
+MYAPP.includes
+myapp.spec
+__pycache__
+pysidedeploy.spec
+SoftwareDecriptionDiagram.drawio
+UI.pyproject.user
+UI.pyproject.user.8eb8510
+MYAPP.files
+MYAPP.cflags
+.gitignore
+MYAPP.cflags
+.gitignore

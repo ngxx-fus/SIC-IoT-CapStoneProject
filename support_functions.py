@@ -145,7 +145,7 @@ class SensorReadingAndServerStreaming(QObject):
     """
     def AutoSetFireAlert(self):
         FireState_Auto = False
-        FireState_Switch_Web = self.FireSwitch
+        FireState_Switch_Web = bool(self.FireSwitch == 'OFF')
         FireState_Switch_Local = self.myapp.fire_switch_value
         # Detected flaming
         if self.isFlaming() == True:

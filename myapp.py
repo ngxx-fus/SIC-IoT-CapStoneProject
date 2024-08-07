@@ -313,7 +313,7 @@ class MYAPP(QWidget):
                     self._FireWaring()
                 return
             elif priority_setter == False:
-                print("[INFO] MYAPP._SetResetFireWaring: Set")
+                print("[INFO] MYAPP._SetResetFireWaring: Reset")
                 if hasattr(self, "thread3") == False:
                     if self.thread3.isRunning() == False:
                         print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
@@ -331,14 +331,14 @@ class MYAPP(QWidget):
             if hasattr(self, "thread3") == False or self.thread3.isRunning() == False:
                 print("[INFO] MYAPP._SetResetFireWaring: Has been reset -> Abort!")
             else:
-                PRINT("[INFO] MYAPP._SetResetFireWaring: Reset")
+                print("[INFO] MYAPP._SetResetFireWaring: Reset")
                 self.thread3.exit()
                 self._ClearNotification(code=1)
         
         self.fire_waring_value = self._not(self.fire_waring_value)
         
         if self.fire_waring_value == True:
-            PRINT("[INFO] MYAPP._SetResetFireWaring: Set")
+            print("[INFO] MYAPP._SetResetFireWaring: Set")
             if hasattr(self, "thread3") == True:
                 print("[INFO] MYAPP._SetResetFireWaring: Has been set -> Abort!")
             else:

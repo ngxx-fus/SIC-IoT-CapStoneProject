@@ -7,6 +7,7 @@
         "Sensor.py",
         "Server.py",
         "Predict.py",
+        "External.py",
         "support_functions.py",
         "reboot.sh",
         "start_my_app.sh"

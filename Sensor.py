@@ -14,10 +14,10 @@ from datetime import datetime
 
 dht_device = adafruit_dht.DHT11(board.D16)
 
-FLAME_PIN = 26
+FLAME_PIN = 12
 IO.setmode(IO.BCM)
 IO.setup(FLAME_PIN, IO.IN)
-MQ2_PIN = 12
+MQ2_PIN = 26
 IO.setup(MQ2_PIN, IO.IN)
 
 def GetTemperature():
@@ -45,10 +45,10 @@ def GetHumidity():
         return -1
 
 def GetGAS():
-    return int(IO.input(MQ2_PIN) == IO.HIGH)
+    return int(IO.input(MQ2_PIN) == IO.LOW)
 
 def GetFlame():
-    return int(IO.input(FLAME_PIN) == IO.HIGH)
+    return int(IO.input(FLAME_PIN) == IO.LOW)
 
 class Sensor:
     def __init__(self):
@@ -63,7 +63,18 @@ class Sensor:
         self.Flame = False
         
     def Read(self):
-        self.Temp  = GetTemperature()
-        self.Humid = GetHumidity()
+        self.Temp  = -1 #GetTemperature()
+        self.Humid = -1 #GetHumidity()
         self.Flame = GetFlame()
         self.GAS   = GetGAS()
+        # print( self.Temp,  self.Humid, self.Flame, self.GAS)
+
+
+if __name__ == "__main__":
+    Sensor = Sensor()
+    try:
+        while True:
+            Sensor.Read()
+            time.sleep(0.5)
+    except KeyboardInterrupt as error:
+        print()

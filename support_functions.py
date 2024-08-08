@@ -105,7 +105,10 @@ class SensorReadingAndServerStreaming(QObject):
         The conclusion of whether there is a fire or not is based on the values obtained from the sensors and predictions from machine learning.
         TODO: rewrite condition
         """
-        if self.Sensor.Flame == 0:
+        if self.Sensor.Flame == 1 or self.Sensor.GAS == 1:
+            if self.Sensor.GAS == 1:
+                self.myapp._SetNotification(2, "GAS detected!")
+            return True
             if self.Sensor.Temp < 45.0:
                 if self.Sensor.GAS == 0:
                     return True

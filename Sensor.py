@@ -1,18 +1,14 @@
 import sys
 import time
-import time
 import board
 import logging
 import numpy
 import subprocess
 import adafruit_dht
 from External import IO
+from External import DHT11
 from random import randint
 from datetime import datetime
-
-DHT11 = adafruit_dht.DHT11(board.D3)
-time.sleep(1)
-print(adafruit_dht.__file__)
 
 class Sensor:
     def __init__(self):
@@ -55,7 +51,7 @@ class Sensor:
 
     def Read(self):
         time.sleep(1)
-        self.Temp, self.Humid = self.DHT11_Reading()
+        self.Temp, self.Humid = self.DHT11Reading()
         # self.Temp, self.Humid = (DHT11.temperature, DHT11.humidity)
         self.Flame = bool(randint(0,100) < 50)
         self.GAS   = bool(randint(0,100) < 50)
@@ -63,11 +59,10 @@ class Sensor:
 
 if __name__ == '__main__':
     Sensor = Sensor()
-    print(Sensor.DHT11Reading())
     try:
-        while False:
+        while True:
             DHT11.measure()
-            print(DHT11.temperature, DHT11.humidity)
+            print("Sensor.DHT11Reading: ", Sensor.DHT11Reading())
             time.sleep(1)
     except KeyboardInterrupt:
         print("Stopped!")

@@ -254,7 +254,7 @@ class CameraStreaming(QObject):
     def __init__(self, myapp):
         super().__init__()
         self.myapp = myapp
-        last = open("./Imgs/Records/last", "r")
+        last = open("./dImgs/Records/last", "r")
         self.id = int(last.read())
         last.close()
 
@@ -271,10 +271,10 @@ class CameraStreaming(QObject):
         while self.myapp.camera_streaming_val == True:
             self.id = (self.id + 1)%14400
             last.write(str(self.id))
+            last.close()
             self.myapp.picam2.capture_file(f"./Imgs/Records/img{self.id}.jpg")
             self.myapp.pixmap.load(f"./Imgs/Records/img{self.id}.jpg")
             self.myapp.ui.Camera_Label.setPixmap(self.myapp.pixmap.scaled(QSize(301, 201)))
             time.sleep(0.041666)
-        last.close()
         self.myapp.picam2.stop()
         self.finished.emit()

@@ -2,7 +2,7 @@ import numpy
 import time
 import requests
 import subprocess
-from External import IO
+import RPi.GPIO as IO
 from random import randint
 from datetime import datetime
 from PySide6 import QtGui
@@ -254,6 +254,11 @@ class CameraStreaming(QObject):
     def __init__(self, myapp):
         super().__init__()
         self.myapp = myapp
+        last = open("last", "r")
+        self.id = int(last.read())
+        last.close()
+
+        
 
     def UpdateData(self):
         """
@@ -262,10 +267,14 @@ class CameraStreaming(QObject):
         + Show QPixmap in QLabel.
         + Sleep ~0.041666second --> ~24fps
         """
+        last = open("last", "w")
         while self.myapp.camera_streaming_val == True:
-            self.myapp.picam2.capture_file("./Imgs/img.jpg")
-            self.myapp.pixmap.load("./Imgs/img.jpg")
+            self.id = (self.id + 1)%14400
+            last.write(str(self.id))
+            self.myapp.picam2.capture_file(f"./Imgs/Records/img{self.id}.jpg")
+            self.myapp.pixmap.load(f"./Imgs/Records/img{self.id}.jpg")
             self.myapp.ui.Camera_Label.setPixmap(self.myapp.pixmap.scaled(QSize(301, 201)))
             time.sleep(0.041666)
+        last.close()
         self.myapp.picam2.stop()
         self.finished.emit()

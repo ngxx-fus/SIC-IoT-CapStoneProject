@@ -1,4 +1,4 @@
-from External import IO
+import RPi.GPIO as IO
 from time import sleep
 
 class Exec:
@@ -7,6 +7,8 @@ class Exec:
     + Control GPIO
     """
     def __init__(self):
+        IO.setmode(IO.BCM)
+        #IO.setwarnings(False)
         self.BuzzerPin = 21
         self.LightPin  = 20
         IO.setup(self.BuzzerPin, IO.OUT)

@@ -14,7 +14,7 @@ from datetime import datetime
 
 dht_device = adafruit_dht.DHT11(board.D16)
 
-FLAME_PIN = 21
+FLAME_PIN = 26
 IO.setmode(IO.BCM)
 IO.setup(FLAME_PIN, IO.IN)
 MQ2_PIN = 12

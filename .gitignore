@@ -22,3 +22,6 @@ __pycache__/Predict.cpython-311.pyc
 __pycache__/Sensor.cpython-311.pyc
 __pycache__/ui_form.cpython-311.pyc
 __pycache__/Server.cpython-311.pyc
+Imgs/Records
+Imgs/Records/
+Imgs/Records/*

@@ -254,7 +254,7 @@ class CameraStreaming(QObject):
     def __init__(self, myapp):
         super().__init__()
         self.myapp = myapp
-        last = open("last", "r")
+        last = open("./Imgs/Recorded/last", "r")
         self.id = int(last.read())
         last.close()
 
@@ -267,7 +267,7 @@ class CameraStreaming(QObject):
         + Show QPixmap in QLabel.
         + Sleep ~0.041666second --> ~24fps
         """
-        last = open("last", "w")
+        last = open("./Imgs/Recorded/last", "w")
         while self.myapp.camera_streaming_val == True:
             self.id = (self.id + 1)%14400
             last.write(str(self.id))

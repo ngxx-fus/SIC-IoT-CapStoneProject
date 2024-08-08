@@ -6,7 +6,7 @@ import logging
 import numpy
 import subprocess
 import adafruit_dht
-import RPi.GPIO as IO
+from External import IO
 from random import randint
 from datetime import datetime
 
@@ -39,17 +39,33 @@ class Sensor:
         self.GetGAS         = lambda: self.GAS
         self.GetFlame       = lambda: self.Flame
 
+    def DHT11Reading(self):
+        while True:
+            try:
+                self.Temp = DHT11.temperature
+                self.Humid = DHT11.humidity
+                return
+            except RuntimeError as error:
+                print([ERROR], print(error.args[0]))
+                continue
+            except Exception as error:
+                dhtDevice.exit()
+                raise error
+        return (-1, -1)
+
     def Read(self):
         time.sleep(1)
-        self.Temp, self.Humid = (randint(24, 33), randint(60,70))
+        self.Temp, self.Humid = self.DHT11_Reading()
         # self.Temp, self.Humid = (DHT11.temperature, DHT11.humidity)
         self.Flame = bool(randint(0,100) < 50)
         self.GAS   = bool(randint(0,100) < 50)
 
 
 if __name__ == '__main__':
+    Sensor = Sensor()
+    print(Sensor.DHT11Reading())
     try:
-        while True:
+        while False:
             DHT11.measure()
             print(DHT11.temperature, DHT11.humidity)
             time.sleep(1)

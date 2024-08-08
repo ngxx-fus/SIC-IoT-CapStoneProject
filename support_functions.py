@@ -2,7 +2,7 @@ import numpy
 import time
 import requests
 import subprocess
-import RPi.GPIO as IO
+from External import IO
 from random import randint
 from datetime import datetime
 from PySide6 import QtGui

@@ -257,12 +257,6 @@ class CameraStreaming(QObject):
     def __init__(self, myapp):
         super().__init__()
         self.myapp = myapp
-        lastr = open("./Imgs/Records/last", "r")
-        last_id = lastr.read()
-        lastr.close()
-        self.id = int(0)
-        if last_id != '':
-            self.id = int(last_id)
 
     def UpdateData(self):
         """
@@ -272,12 +266,8 @@ class CameraStreaming(QObject):
         + Sleep ~0.041666second --> ~24fps
         """
         while self.myapp.camera_streaming_val == True:
-            self.id = (self.id + 1)%14400
-            lastw = open("./Imgs/Records/last", "w")
-            lastw.write(str(self.id))
-            lastw.close()
-            self.myapp.picam2.capture_file(f"./Imgs/Records/img{self.id}.jpg")
-            self.myapp.pixmap.load(f"./Imgs/Records/img{self.id}.jpg")
+            self.myapp.picam2.capture_file(f"./Imgs/Records/img.jpg")
+            self.myapp.pixmap.load(f"./Imgs/Records/img.jpg")
             self.myapp.ui.Camera_Label.setPixmap(self.myapp.pixmap.scaled(QSize(301, 201)))
             time.sleep(0.041666)
         self.myapp.picam2.stop()

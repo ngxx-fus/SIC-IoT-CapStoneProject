@@ -70,7 +70,7 @@ def ServerSYNC( Temp = None, Humid = None, GAS = None, Fire = None, FireSwitch =
         ServerSYNCStatus(MYAPP, "Getting LightSwitch Sw...", ConsoleLog)
         LightSwitch = db.reference('LivingRoom/light').get(False)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
-        return [ FireSwitch, LightSwitch ]
+        return [ LightSwitch , FireSwitch ]
     return [None, None]
 
 if __name__ == "__main__":

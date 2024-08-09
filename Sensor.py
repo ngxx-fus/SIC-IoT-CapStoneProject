@@ -63,8 +63,8 @@ class Sensor:
         self.Flame = False
         
     def Read(self):
-        self.Temp  = -1 #GetTemperature()
-        self.Humid = -1 #GetHumidity()
+        self.Temp  = GetTemperature()
+        self.Humid = GetHumidity()
         self.Flame = GetFlame()
         self.GAS   = GetGAS()
         # print( self.Temp,  self.Humid, self.Flame, self.GAS)

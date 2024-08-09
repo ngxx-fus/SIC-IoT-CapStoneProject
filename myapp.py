@@ -5,6 +5,7 @@ import logging
 import PySide6.QtGui
 
 from picamera2 import Picamera2, Preview
+from libcamera import Transform
 from PySide6.QtWidgets import QApplication, QWidget, QMainWindow, QLabel
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 from PySide6.QtCore import QTimer, QThread
@@ -52,6 +53,8 @@ class MYAPP(QWidget):
         self.sensor_read_val = True
         # for CameraStreaming
         self.picam2 = Picamera2()
+        config = self.picam2.create_still_configuration(transform=Transform(hflip=True))
+        self.picam2.configure(config)
         self.picam2.start()
         self.pixmap = QPixmap("./Imgs/img.jpg")
         self.light_switch_value = False

@@ -26,6 +26,11 @@ NOTE:
     If FAN or LIGHT is not None, they will update ON/OFF state same on web.
 """
 
+def _ONOFF(val):
+    if val > 0.0:
+        return 'ON'
+    return 'OFF'
+
 def ServerSYNCStatus(MYAPP = None, msg = "", ConsoleLog = False):
     if MYAPP is not None:
         MYAPP.ui.ServerConnection_Value.setText(msg)
@@ -44,7 +49,7 @@ def ServerSYNC( Temp = None, Humid = None, GAS = None, Fire = None, FireSwitch =
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if GAS is not None:
         ServerSYNCStatus(MYAPP, "Updating GAS...", ConsoleLog)
-        db.reference('LivingRoom/smoke').set(GAS)
+        db.reference('LivingRoom/smoke').set(_ONOFF(GAS))
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if Fire is not None:
         ServerSYNCStatus(MYAPP, "Updating Fire St...", ConsoleLog)
@@ -52,21 +57,21 @@ def ServerSYNC( Temp = None, Humid = None, GAS = None, Fire = None, FireSwitch =
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if FireSwitch is not None:
         ServerSYNCStatus(MYAPP, "Updating Fire Sw...", ConsoleLog)
-        db.reference('LivingRoom/fan').set(FireSwitch)
+        db.reference('LivingRoom/fan').set(_ONOFF(FireSwitch))
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if LightSwitch is not None:
         ServerSYNCStatus(MYAPP, "Updating LightSwitch St...", ConsoleLog)
-        db.reference('LivingRoom/light').set(LightSwitch)
+        db.reference('LivingRoom/light').set(_ONOFF(LightSwitch))
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
     if GET == True:
         ServerSYNCStatus(MYAPP, "Getting Fire Sw...", ConsoleLog)
-        FireSwitch = db.reference('LivingRoom/light').get(False)
+        FireSwitch = db.reference('LivingRoom/fireAlarm').get(False)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
         ServerSYNCStatus(MYAPP, "Getting LightSwitch Sw...", ConsoleLog)
-        LightSwitch = db.reference('LivingRoom/fan').get(False)
+        LightSwitch = db.reference('LivingRoom/light').get(False)
         ServerSYNCStatus(MYAPP, "Done!", ConsoleLog)
         return [ FireSwitch, LightSwitch ]
     return [None, None]
 
 if __name__ == "__main__":
-    print(ServerSYNC(Fire='ON'))
+    print(ServerSYNC(Fire=0, GAS=1, GET=True, ConsoleLog=True))

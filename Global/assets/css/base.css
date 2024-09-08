@@ -1,0 +1,93 @@
+* {
+    background: #d5e1ec;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body > div {
+    margin: auto;
+
+  }
+
+html {
+    font-size: 62.5%;
+    line-height: 1.6rem;
+    font-family: "Roboto", sans-serif;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+/* Tối ưu hiển thị trên các thiết bị */
+/* Mặc định cho thiết bị di động */
+body {
+    font-size: 16px;
+    height: 98%;
+  }
+
+.grid {
+  width: 1350px;
+  height: 625px;
+  position: relative;
+}
+
+.grid__full-width {
+    width: 100%;
+}
+
+.grid__row {
+  position: relative;
+  top: 1%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 20px;
+  margin-right: 20px;
+  width: calc(100%-20px);
+  height: 85%;
+}
+
+.grid__column-2 {
+    position: relative;
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 16.6667%;
+    height: 100%;
+    background: none;
+}
+
+.grid__column-10 {
+    position: relative;
+    left: 30px;
+    padding-right: 12px;
+    height: 100%;
+    width: 79%;
+    background: none;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (width < 500px){
+  .grid {
+    width: 410px;
+    height: 500px;
+  }
+
+  .grid__column-10 {
+      position: relative;
+      left: 10px;
+      padding-right: 2px;
+      height: 100%;
+  }
+
+  .grid__row {
+    height: 90%;
+  }
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/General.css">
+    <link rel="stylesheet" href="./assets/css/Device.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap&subset=vietnamese" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/font/fontawesome-free-6.5.2-web/css/all.css">
+    <link rel="icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <title>Device</title>
+</head>
+<body>
+    <audio id="alarmSound" src="./assets/img/Alarm.mp3" loop></audio>
+    <!---------------------------------HEADER------------------------------------>
+<div class="grid"> 
+    <header class="header">
+            <div class="header__navbar">
+              <div class="user1">
+                <img src="./assets/img/HCMUTE.png">
+              </div>
+
+              <div class="Title">             
+                <div class="header__navbar-title">FIRE SAFETY AND MONITORING SYSTEM FOR APARTMENTS</div>
+              </div>
+                
+                  <div class="user2">
+                    <img src="./assets/img/Samsung.jpg">
+                  </div>
+            </div>
+    </header>
+    <!---------------------------------CATEGORY------------------------------------>
+            <div class="grid__row">
+                <div class="grid__column-2">
+                    <nav class="category">
+                      <ul class="category-list">
+                          <h3 class="category__heading">Category</h3>
+                          <li class="category-item">
+                            <a href="./Home.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                                <span class="title">Home</span>
+                            </a>
+                        </li>
+                        <li class="category-item category-item--active">
+                            <a href="./Device.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="laptop-outline"></ion-icon></span>
+                                <span class="title">Device</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./Chart.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                                <span class="title">DashBoard</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./Member.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
+                                <span class="title">Member</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#" class="category-item__link">
+                                <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                                <span class="title">Settings</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./reset-pass.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                                <span class="title">Password</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./index.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                                <span class="title">Sign Out</span>
+                            </a>
+                        </li>
+                     </ul>
+                    </nav>
+                </div>
+    <!---------------------------------DEVICE__SENSOR------------------------------------>
+                <div class="grid__column-10">
+                    <nav class="device__body">
+                        <ul class="device-list">
+                            <ul class="status">
+                                <li class="status__list">
+                                    <span class="Sensor">
+                                        <img id="firesensor_node1_id" src="./assets/img/fire.png" alt="img" class="data_img">
+                                        <p>Fire:  <span class="data" id="fire_node1">None</span></p>
+                                    </span>
+                                </li>
+                                <li class="status__list">
+                                    <span class="Sensor">
+                                        <img id="smoke_node1_id" src="./assets/img/smoke.png" alt="img" class="data_img">
+                                       <p>Gas:  <span class="data" id="smoke_node1">None</span></p>
+                                    </span>
+                                </li>
+                            </ul>
+                        <section>
+                            <li>
+                                <span>
+                                    <i class="fa-regular fa-droplet" style="color: blue;"></i>
+                                    <span class="device_name">Humidity</span>
+                                        <span class="device_status">
+                                            Value<span style="color: blue;" id="doamkk">None</span>
+                                        </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span>
+                                    <i class="fa-regular fa-temperature-three-quarters" style="color: red;"></i>
+                                    <span class="device_name">Temperature</span>
+                                    <span class="device_status">
+                                        Value<span style="color: red;" id="nhietdo">None</span>
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="text-center">
+                                    <i id="thelight" class="fa fa-lightbulb"></i>
+                                    <span class="device_name">Main Light</span>
+                                    <span class="device_status">Status: 
+                                        <span id="textlight">None</span>
+                                    </span>
+                                    <div id="wrapper">
+                                        <div class="switch">
+                                            <input type="checkbox" name="toggle" id="light" checked>
+                                            <label for="toggle">
+                                              <div class="bulb">
+                                                <span class="bulb-center"></span>
+                                                
+                                                <span class="sparks">
+                                                  <i class="spark1"></i>
+                                                  <i class="spark2"></i>
+                                                  <i class="spark3"></i>
+                                                  <i class="spark4"></i>
+                                                </span>
+                                            </div>
+                                            </label>
+                                          </div>
+                                    </div>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="text-center">
+                                    <i id="firealarm" class="fa-regular fa-house-fire"></i>
+                                    <span class="device_name">Fire Alarm</span>
+                                    <span class="device_status">Status:
+                                        <span id="textfireAlarm">None</span>
+                                    </span>
+                                    <div id="wrapper">
+                                        <div class="switch">
+                                            <input type="checkbox" name="toggle" id="fireAlarm" checked>
+                                            <label for="toggle">
+                                              <div class="bulb">
+                                                <span class="bulb-center"></span>
+                                                <span class="sparks">
+                                                  <i class="spark1"></i>
+                                                  <i class="spark2"></i>
+                                                  <i class="spark3"></i>
+                                                  <i class="spark4"></i>
+                                                </span>
+                                            </div>
+                                            </label>
+                                          </div>
+                                    </div>
+                                </span>
+                            </li>
+                        </section>
+                        </ul>
+                    </nav>      
+                </div>
+            </div>
+            <div id="toast2"></div>
+        </div>
+            <div id="overlay" class="overlay"></div>
+<script>
+    function closeToast() {
+    toast({
+        title: "Warning",
+        message: "If you enable this rule, you will trigger a fire alarm!",
+        type: "warning",
+        duration: 3000
+    });
+}
+</script>
+    <script type="module" src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script src="./assets/javascript/Device.js"></script>
+</body>
+</html>

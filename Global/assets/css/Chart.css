@@ -1,0 +1,116 @@
+.grid-container {
+    width: 100%;
+    height: 85%;
+    position: relative;
+}
+
+.grid-item{
+    display: flex;
+    width: 45%;
+    box-shadow: 4px 4px 9px -1px rgba(0,0,0,0.15),
+    -6px -6px 6px -1px rgb(226, 232, 237);
+	border-radius: 5px;
+    font-size: 20px;
+    text-align: center;
+    opacity: 1;
+    padding-bottom: 10px;
+}
+
+.boxdata {
+    align-items: center;
+    flex-grow: 1;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.data{
+    color: #f71b3f;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+}
+
+.sensor{
+    color: #f71b3f;
+    font-family: 'Rubik', sans-serif;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+.grid-item:nth-child(1) {
+    position: absolute;
+    top: 20%;
+    left: 2%;
+}
+
+.grid-item:nth-child(2) {
+    position: absolute;
+    top: 20%;
+    left: 53%;
+}
+
+.grid-item:nth-child(3) {
+    position: absolute;
+    top: 70%;
+    left: 2%;
+}
+
+@media (width < 500px){
+    .grid-container {
+        width: 100%;
+        height: 85%;
+        position: relative;
+    }
+    
+    .grid-item{
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+        box-shadow: 4px 4px 9px -1px rgba(0,0,0,0.15),
+        -6px -6px 6px -1px rgb(226, 232, 237);
+        border-radius: 5px;
+        font-size: 20px;
+        text-align: center;
+        opacity: 1;
+        padding-bottom: 10px;
+    }
+    
+    .boxdata {
+        align-items: center;
+        flex-grow: 1;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .data{
+        color: #f71b3f;
+        font-family: 'Rubik', sans-serif;
+        font-size: 15px;
+    }
+    
+    .sensor{
+        color: #f71b3f;
+        font-family: 'Rubik', sans-serif;
+        font-size: 15px;
+        margin-top: 10px;
+    }
+    
+    .grid-item:nth-child(1) {
+        position: absolute;
+        top: 5%;
+        left: 2%;
+    }
+    
+    .grid-item:nth-child(2) {
+        position: absolute;
+        top: 60%;
+        left: 2%;
+    }
+    
+    .grid-item:nth-child(3) {
+        position: absolute;
+        top: 115%;
+        left: 2%;
+    }
+}

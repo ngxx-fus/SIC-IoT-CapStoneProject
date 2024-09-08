@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./assets/css/reset-pass.css">
+    <link rel="icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <title>Reset Password</title>
+</head>
+<body>
+    <!---------------------------------DOTS LOADER------------------------------------>
+    <div id="loader" class="dots-container" style="display: none;">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+     <!---------------------------------RESET FORM------------------------------------>
+    <div class="form-container">
+        <div class="box">
+            <div class="logo-container">
+              Reset Password
+            </div>
+        
+            <form id="reset-password-form" class="form">
+                <div class="field">
+                    <input required="" type="password" class="input" id="old-password">
+                    <span class="span">
+                        <svg class="" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 512 512" y="0" x="0" height="20" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <g><path class="" data-original="#000000" fill="#595959" d="M336 192h-16v-64C320 57.406 262.594 0 192 0S64 57.406 64 128v64H48c-26.453 0-48 21.523-48 48v224c0 26.477 21.547 48 48 48h288c26.453 0 48-21.523 48-48V240c0-26.477-21.547-48-48-48zm-229.332-64c0-47.063 38.27-85.332 85.332-85.332s85.332 38.27 85.332 85.332v64H106.668zm0 0"></path></g>
+                        </svg>
+                    </span>
+                    <div class="toggle-password">
+                        <i class="fas fa-eye" id="toggleIcon0"></i>
+                    </div>
+                    <label class="label">Current password</label>
+                  </div>
+
+              <div class="field">
+                <input required="" type="password" class="input" id="password">
+                <span class="span">
+                    <svg class="" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 512 512" y="0" x="0" height="20" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <g><path class="" data-original="#000000" fill="#595959" d="M336 192h-16v-64C320 57.406 262.594 0 192 0S64 57.406 64 128v64H48c-26.453 0-48 21.523-48 48v224c0 26.477 21.547 48 48 48h288c26.453 0 48-21.523 48-48V240c0-26.477-21.547-48-48-48zm-229.332-64c0-47.063 38.27-85.332 85.332-85.332s85.332 38.27 85.332 85.332v64H106.668zm0 0"></path></g>
+                    </svg>
+                </span>
+                <div class="toggle-password">
+                    <i class="fas fa-eye" id="toggleIcon1"></i>
+                </div>
+                <label class="label">New password</label>
+              </div>
+
+              <div class="field">
+                 <input required="" type="password" class="input" id="confirm-password">
+                 <span class="span">
+                    <svg class="" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 512 512" y="0" x="0" height="20" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                       <g><path class="" data-original="#000000" fill="#595959" d="M336 192h-16v-64C320 57.406 262.594 0 192 0S64 57.406 64 128v64H48c-26.453 0-48 21.523-48 48v224c0 26.477 21.547 48 48 48h288c26.453 0 48-21.523 48-48V240c0-26.477-21.547-48-48-48zm-229.332-64c0-47.063 38.27-85.332 85.332-85.332s85.332 38.27 85.332 85.332v64H106.668zm0 0"></path></g>
+                    </svg>
+                 </span>
+                 <div class="toggle-password">
+                    <i class="fas fa-eye" id="toggleIcon2"></i>
+                </div>
+                 <label class="label">Confirm new password</label>
+                 <div id="password-error-message" class="error-message"></div>
+              </div>
+        
+              <button class="form-submit-btn" type="submit">Change password</button>
+                              <div id="error-message" class="error-message"></div>
+                              <!-- <div class="sign-up">
+                                Don't have an account?
+                                <a href="./signup.html">Sign up</a>
+                              </div> -->
+            </form>
+
+            <!-- <button class="back">
+                <a href="./Home.html">
+                <span>
+                <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024"><path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path></svg>
+                    Back
+                </span>
+            </a>
+            </button> -->
+        </div>
+    </div>
+
+    <!---------------------------------TOAST MESSAGE------------------------------------>
+    <div id="toast"></div>
+    <script>
+      function showSuccessToast() {
+          toast({
+              title: "Success!",
+              message: "You have successfully changed your password.",
+              type: "success",
+              duration: 5000
+          });
+      }
+
+      function showErrorEmailToast(emailErrorMessage) {
+          toast({
+              title: "Failure!",
+              message:"No users were found with this email address.",
+              type: "errorEmail",
+              duration: 5000
+          });
+      }
+
+      function showErrorToast(errorMessage) {
+          toast({
+              title: "Failure!",
+              message: errorMessage ||"Đây là tính năng. Bấm thêm lần nữa nha!",
+              type: "error",
+              duration: 5000
+          });
+      }
+  </script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script src="./assets/javascript/reset-pass.js"></script>
+    <script src="./assets/javascript/Loader.js"></script>
+</body>
+</html>

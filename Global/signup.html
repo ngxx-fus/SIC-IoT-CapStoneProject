@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./assets/css/signup.css">
+    <link rel="stylesheet" href="./assets/css/Loader.css">
+    <link rel="icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <title>Sign up</title>
+</head>
+<body>
+    <!---------------------------------DOTS__LOADER------------------------------------>
+    <div id="loader" class="dots-container" style="display: none;">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+    <!---------------------------------SIGN UP FORM------------------------------------>
+<div id="load">
+    <div class="content">
+        <div class="box">
+            <div class="text">Sign up</div>
+            <form id="signup-form">
+                <div class="field">
+                    <input required="" type="text" class="input" id="email">
+                    <span class="span">
+                        <svg class="" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 512 512" y="0" x="0" height="20" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <g><path class="" data-original="#000000" fill="#595959" d="M256 0c-74.439 0-135 60.561-135 135s60.561 135 135 135 135-60.561 135-135S330.439 0 256 0zM423.966 358.195C387.006 320.667 338.009 300 286 300h-60c-52.008 0-101.006 20.667-137.966 58.195C51.255 395.539 31 444.833 31 497c0 8.284 6.716 15 15 15h420c8.284 0 15-6.716 15-15 0-52.167-20.255-101.461-57.034-138.805z"></path></g>
+                        </svg>
+                    </span>
+                    <label class="label">Email</label>
+                    <div id="email-error-message" class="error-message"></div>
+                </div>
+                <div class="field">
+                    <input required="" type="password" class="input" id="password">
+                    <span class="span">
+                        <svg class="" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 512 512" y="0" x="0" height="20" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <g><path class="" data-original="#000000" fill="#595959" d="M336 192h-16v-64C320 57.406 262.594 0 192 0S64 57.406 64 128v64H48c-26.453 0-48 21.523-48 48v224c0 26.477 21.547 48 48 48h288c26.453 0 48-21.523 48-48V240c0-26.477-21.547-48-48-48zm-229.332-64c0-47.063 38.27-85.332 85.332-85.332s85.332 38.27 85.332 85.332v64H106.668zm0 0"></path></g>
+                        </svg>
+                    </span>
+                    <div class="toggle-password">
+                        <i class="fas fa-eye" id="toggleIcon1"></i>
+                    </div>
+                    <label class="label">Password</label>
+                  </div>
+                  <div class="field">
+                     <input required="" type="password" class="input" id="confirm-password">
+                     <span class="span">
+                        <svg class="" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 512 512" y="0" x="0" height="20" width="50" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                           <g><path class="" data-original="#000000" fill="#595959" d="M336 192h-16v-64C320 57.406 262.594 0 192 0S64 57.406 64 128v64H48c-26.453 0-48 21.523-48 48v224c0 26.477 21.547 48 48 48h288c26.453 0 48-21.523 48-48V240c0-26.477-21.547-48-48-48zm-229.332-64c0-47.063 38.27-85.332 85.332-85.332s85.332 38.27 85.332 85.332v64H106.668zm0 0"></path></g>
+                        </svg>
+                     </span>
+                     <div class="toggle-password">
+                        <i class="fas fa-eye" id="toggleIcon2"></i>
+                    </div>
+                     <label class="label">Confirm password</label>
+                     <div id="password-error-message" class="error-message"></div>
+                  </div>
+                <button type="submit" id="register-btn" class="button">Sign up</button>
+                <div class="sign-up">
+                    Have an account?
+                    <a href="./index.html">Log in</a>
+                </div>
+                <div id="success-message" class="success-message"></div>
+            </form>
+        </div>
+    </div>
+</div>
+    <!---------------------------------TOAST__MESSAGE------------------------------------>
+    <div id="toast"></div>
+    
+    <script>
+        function showSuccessToast() {
+            toast({
+                title: "Success!",
+                message: "Successful Signup.",
+                type: "success",
+                duration: 5000
+            });
+        }
+
+        function showErrorToast(errorMessage) {
+            toast({
+                title: "Failure!",
+                message: errorMessage || "An error occurred, please contact the administrator.",
+                type: "error",
+                duration: 5000
+            });
+        }
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+    <script src="./assets/javascript/signup.js"></script>
+    <script src="./assets/javascript/Loader.js"></script>
+</body>
+</html>

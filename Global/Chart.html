@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+        integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/General.css">
+    <link rel="stylesheet" href="./assets/css/Chart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap&subset=vietnamese"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./assets/font/fontawesome-free-6.5.2-web/css/all.css">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" href="./assets/img/favicon.ico" type="image/x-icon">
+    <title>Chart</title>
+</head>
+
+<body>
+    <audio id="alarmSound" src="./assets/img/Alarm.mp3" loop></audio>
+    <!---------------------------------HEADER------------------------------------>
+    <div class="grid">
+        <header class="header">
+            <div class="header__navbar">
+                <div class="user1">
+                    <img src="./assets/img/HCMUTE.png">
+                </div>
+
+                <div class="Title">
+                    <div class="header__navbar-title">FIRE SAFETY AND MONITORING SYSTEM FOR APARTMENTS
+                    </div>
+                </div>
+
+                <div class="user2">
+                    <img src="./assets/img/Samsung.jpg">
+                </div>
+            </div>
+        </header>
+
+        <!---------------------------------CATEGORY------------------------------------>
+        <div class="grid__row">
+            <div class="grid__column-2">
+                <nav class="category">
+                    <ul class="category-list">
+                        <h3 class="category__heading">Category</h3>
+                        <li class="category-item">
+                            <a href="./Home.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                                <span class="title">Home</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./Device.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="laptop-outline"></ion-icon></span>
+                                <span class="title">Device</span>
+                            </a>
+                        </li>
+                        <li class="category-item category-item--active">
+                            <a href="./Chart.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                                <span class="title">DashBoard</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./Member.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
+                                <span class="title">Member</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#" class="category-item__link">
+                                <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                                <span class="title">Settings</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./reset-pass.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                                <span class="title">Password</span>
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="./index.html" class="category-item__link">
+                                <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                                <span class="title">Sign Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!---------------------------------DEVICE__SENSOR------------------------------------>
+            <div class="grid__column-10">
+                <nav class="device__body">
+                    <ul class="device-list">
+                        <ul class="status">
+                            <li class="status__list">
+                                <span class="Sensor">
+                                    <img id="firesensor_node1_id" src="./assets/img/fire.png" alt="img"
+                                        class="data_img">
+                                    <p>Fire: <span class="data" id="fire_node1">None</span></p>
+                                </span>
+                            </li>
+                            <li class="status__list">
+                                <span class="Sensor">
+                                    <img id="smoke_node1_id" src="./assets/img/smoke.png" alt="img" class="data_img">
+                                    <p>Gas: <span class="data" id="smoke_node1">None</span></p>
+                                </span>
+                            </li>
+                        </ul>
+                        <!---------------------------------CHART------------------------------------>
+                        <div class="grid-container">
+                            <div class="grid-item">
+                                <div class="boxdata">
+                                    <p class="sensor">Temperature: <span class="data" id="nhietdo">None</span></p>
+                                    <canvas id="nhietdo_Chart" class="chart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="grid-item">
+                                <div class="boxdata">
+                                    <p class="sensor">Humidity: <span class="data" id="doamkk">None</span></p>
+                                    <canvas id="doamkk_Chart" class="chart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- <div class="grid-item">
+                                <div class="boxdata">
+                                    <p class="sensor">Gas: <span class="data" id="khigas">None</span></p>
+                                    <canvas id="gas_Chart" class="chart"></canvas>
+                                </div>
+                            </div> -->
+                        </div>
+                    </ul>
+            </div>
+            </nav>
+        </div>
+    </div>
+    <!---------------------------------CHART SCRIPT------------------------------------>
+    <script>
+        const temperatureChartCanvas = document.getElementById('nhietdo_Chart').getContext('2d');
+        const humidityChartCanvas = document.getElementById('doamkk_Chart').getContext('2d');
+        // const gasChartCanvas = document.getElementById('gas_Chart').getContext('2d');
+        // --------------------------TIME LABLES-----------------------------------------------
+        const timeLabels = [];
+        for (let i = 0; i < 10; i++) {
+            let now = new Date();
+            let time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            timeLabels.push(time);
+        }
+        // --------------------------CREAT THE LINE CHARTS-----------------------------------------------
+        new Chart(temperatureChartCanvas, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: 'Temperature',
+                    data: nhietdo,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        new Chart(humidityChartCanvas, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [{
+                    label: 'Humidity',
+                    data: doamkk,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // new Chart(gasChartCanvas, {
+        //     type: 'line',
+        //     data: {
+        //         labels: timeLabels,
+        //         datasets: [{
+        //             label: 'Gas',
+        //             data: khigas,
+        //             borderColor: 'rgba(255, 99, 132, 1)',
+        //             backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        //             fill: true
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true,
+        //         scales: {
+        //             x: {
+        //                 ticks: {
+        //                     font: {
+        //                         size: 10
+        //                     }
+        //                 }
+        //             },
+        //             y: {
+        //                 ticks: {
+        //                     font: {
+        //                         size: 10
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // });
+    </script>
+    <script type="module" src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"> </script>
+    <script src="./assets/javascript/Chart.js"></script>
+</body>
+
+</html>

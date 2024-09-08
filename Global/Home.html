@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/General.css">
+  <link rel="stylesheet" href="./assets/css/Home.css">
+  <link rel="stylesheet" href="./assets/css/Mobile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap&subset=vietnamese"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./assets/font/fontawesome-free-6.5.2-web/css/all.css">
+  <link rel="icon" href="./assets/img/favicon.ico" type="image/x-icon">
+  <title>FireWarning</title>
+</head>
+
+
+<body>
+  <audio id="alarmSound" src="./assets/img/Alarm.mp3" loop></audio>
+  <!---------------------------------HEADER------------------------------------>
+  <div class="grid">
+    <header class="header">
+      <div class="header__navbar">
+        <div class="user1">
+          <img src="./assets/img/HCMUTE.png">
+        </div>
+
+        <div class="Title">
+          <div class="header__navbar-title">FIRE SAFETY AND MONITORING SYSTEM FOR APARTMENTS</div>
+        </div>
+
+        <div class="user2">
+          <img src="./assets/img/Samsung.jpg">
+        </div>
+      </div>
+    </header>
+
+    <!---------------------------------CATEGORY------------------------------------>
+    <div class="grid__row">
+      <div class="grid__column-2">
+        <nav class="category">
+          <ul class="category-list">
+            <h3 class="category__heading">Category</h3>
+            <li class="category-item category-item--active">
+              <a href="./Home.html" class="category-item__link">
+                <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+                <span class="title">Home</span>
+              </a>
+            </li>
+            <li class="category-item">
+              <a href="./Device.html" class="category-item__link">
+                <span class="icon"><ion-icon name="laptop-outline"></ion-icon></span>
+                <span class="title">Device</span>
+              </a>
+            </li>
+            <li class="category-item">
+              <a href="./Chart.html" class="category-item__link">
+                <span class="icon"><ion-icon name="bar-chart-outline"></ion-icon></span>
+                <span class="title">DashBoard</span>
+              </a>
+            </li>
+            <li class="category-item">
+              <a href="./Member.html" class="category-item__link">
+                <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
+                <span class="title">Member</span>
+              </a>
+            </li>
+            <li class="category-item">
+              <a href="#" class="category-item__link">
+                <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                <span class="title">Settings</span>
+              </a>
+            </li>
+            <li class="category-item">
+              <a href="./reset-pass.html" class="category-item__link">
+                <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                <span class="title">Password</span>
+              </a>
+            </li>
+            <li class="category-item">
+              <a href="./index.html" class="category-item__link">
+                <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                <span class="title">Sign Out</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!---------------------------------SENSOR WARN------------------------------------>
+      <div class="grid__column-10">
+        <nav class="device__body">
+          <ul class="device-list">
+            <ul class="status">
+              <li class="status__list">
+                <span class="Sensor">
+                  <img id="firesensor_node1_id" src="./assets/img/fire.png" alt="img" class="data_img">
+                  <p>Fire: <span class="data" id="fire_node1">None</span></p>
+                </span>
+              </li>
+              <li class="status__list">
+                <span class="Sensor">
+                  <img id="smoke_node1_id" src="./assets/img/smoke.png" alt="img" class="data_img">
+                  <p>Gas: <span class="data" id="smoke_node1">None</span></p>
+                </span>
+              </li>
+            </ul>
+            <section>
+              <div class="body-general">
+                <!---------------------------------CLOCK------------------------------------>
+                <div class="body__clock">
+                  <div class="time">
+                    <div class="time-colon">
+                      <div class="time-text">
+                        <span class="num hour_num"></span>
+                        <span class="text">Hours</span>
+                      </div>
+                      <span class="colon">:</span>
+                    </div>
+                    <div class="time-colon">
+                      <div class="time-text">
+                        <span class="num min_num"></span>
+                        <span class="text">Minutes</span>
+                      </div>
+                      <span class="colon">:</span>
+                    </div>
+                    <div class="time-colon">
+                      <div class="time-text">
+                        <span class="num sec_num"></span>
+                        <span class="text">Seconds</span>
+                      </div>
+                      <span class="colon"></span>
+                      <span class="am_pm">AM</span>
+                    </div>
+                  </div>
+                </div>
+                <!------------------------------DATE----------------------------------->
+                <div class="body__date">
+                  <div class="date">
+                    <div class="time-colon">
+                      <div class="time-text">
+                        <span class="day_num"></span>
+                        <span class="text">Day</span>
+                      </div>
+                      <span class="colon">/</span>
+                    </div>
+                    <div class="time-colon">
+                      <div class="time-text">
+                        <span class="month_num"></span>
+                        <span class="text">Month</span>
+                      </div>
+                      <span class="colon">/</span>
+                    </div>
+                    <div class="time-colon">
+                      <div class="time-text">
+                        <span class="year_num"></span>
+                        <span class="text">Year</span>
+                      </div>
+                      <span class="colon"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <!---------------------------------SET TIME------------------------------------>
+  <script>
+    setInterval(() => {
+      let date = new Date(),
+        hour = date.getHours(),
+        min = date.getMinutes(),
+        sec = date.getSeconds();
+      let d;
+      d = hour < 12 ? "AM" : "PM";
+      hour = hour > 12 ? hour - 12 : hour;
+      hour = hour == 0 ? hour = 12 : hour;
+      hour = hour < 10 ? "0" + hour : hour;
+      min = min < 10 ? "0" + min : min;
+      sec = sec < 10 ? "0" + sec : sec;
+      document.querySelector(".hour_num").innerText = hour;
+      document.querySelector(".min_num").innerText = min;
+      document.querySelector(".sec_num").innerText = sec;
+      document.querySelector(".am_pm").innerText = d;
+
+
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+      document.querySelector(".day_num").innerText = day < 10 ? "0" + day : day;
+      document.querySelector(".month_num").innerText = month < 10 ? "0" + month : month;
+      document.querySelector(".year_num").innerText = year;
+    }, 1000);
+  </script>
+  <script type="module" src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+  <script src="./assets/javascript/Home.js" defer></script>
+</body>
+
+</html>
